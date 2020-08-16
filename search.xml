@@ -8998,7 +8998,30 @@
 <p><img src="/images/proxychains1.jpg"></p>
 <a id="more"></a>
 
+<p>可以看到ip地址还是本地的地址，下面来修改一下proxychains的配置文件，执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /etc/proxychains.conf</span><br></pre></td></tr></table></figure>
 
+<p>按照下图所示的部分修改即可</p>
+<p><img src="/images/proxychains2.jpg"></p>
+<p><img src="/images/proxychains3.jpg"></p>
+<p>然后ctrl+x保存退出即可</p>
+<p><font color="red">注意，使用proxychains代理浏览器需要先搭建vps配置shadowsocksr代理，搭建和配置方法详见之前一篇的本人博客。</font></p>
+<p>然后启动tor服务，tor具有匿名访问的功能，能够更好的保护隐私，防止DNS泄露</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service tor start</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains4.jpg"></p>
+<p>接下来以proxychains代理的方式来启动浏览器打开<span class="exturl" data-url="aHR0cDovL3d3dy5iYWlkdS5jb23ovpPlhaVpcOadpeafpeeci2lw5Zyw5Z2ALw==">www.baidu.com输入ip来查看ip地址<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">proxychains firefox www.baidu.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains5.jpg"></p>
+<p><img src="/images/proxychains6.jpg"></p>
+<p>再来试下打开谷歌</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">proxychains firefox www.google.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains7.jpg"></p>
+<p>完全没问题！</p>
+<p>另外，如果不想敲命令的话，也可以按如下图所示配置浏览器，效果是一样的</p>
+<p><img src="/images/proxychains8.jpg"></p>
 ]]></content>
       <categories>
         <category>kali配置</category>

@@ -31,8 +31,15 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fdlucifer.github.io/images/proxychains.jpg">
 <meta property="og:image" content="https://fdlucifer.github.io/images/proxychains1.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains2.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains3.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains4.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains5.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains6.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains7.jpg">
+<meta property="og:image" content="https://fdlucifer.github.io/images/proxychains8.jpg">
 <meta property="article:published_time" content="2019-02-13T09:36:29.000Z">
-<meta property="article:modified_time" content="2020-08-16T17:36:18.251Z">
+<meta property="article:modified_time" content="2020-08-16T17:38:31.918Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="proxychains">
 <meta name="twitter:card" content="summary">
@@ -235,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-17 01:36:18" itemprop="dateModified" datetime="2020-08-17T01:36:18+08:00">2020-08-17</time>
+                <time title="Modified: 2020-08-17 01:38:31" itemprop="dateModified" datetime="2020-08-17T01:38:31+08:00">2020-08-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,7 +267,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>163</span>
+              <span>548</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -287,7 +294,30 @@
 <p><img src="/images/proxychains1.jpg"></p>
 <a id="more"></a>
 
+<p>可以看到ip地址还是本地的地址，下面来修改一下proxychains的配置文件，执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/proxychains.conf</span><br></pre></td></tr></table></figure>
 
+<p>按照下图所示的部分修改即可</p>
+<p><img src="/images/proxychains2.jpg"></p>
+<p><img src="/images/proxychains3.jpg"></p>
+<p>然后ctrl+x保存退出即可</p>
+<p><font color="red">注意，使用proxychains代理浏览器需要先搭建vps配置shadowsocksr代理，搭建和配置方法详见之前一篇的本人博客。</font></p>
+<p>然后启动tor服务，tor具有匿名访问的功能，能够更好的保护隐私，防止DNS泄露</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service tor start</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains4.jpg"></p>
+<p>接下来以proxychains代理的方式来启动浏览器打开<span class="exturl" data-url="aHR0cDovL3d3dy5iYWlkdS5jb23ovpPlhaVpcOadpeafpeeci2lw5Zyw5Z2ALw==">www.baidu.com输入ip来查看ip地址<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains firefox www.baidu.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains5.jpg"></p>
+<p><img src="/images/proxychains6.jpg"></p>
+<p>再来试下打开谷歌</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains firefox www.google.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains7.jpg"></p>
+<p>完全没问题！</p>
+<p>另外，如果不想敲命令的话，也可以按如下图所示配置浏览器，效果是一样的</p>
+<p><img src="/images/proxychains8.jpg"></p>
 
     </div>
 
