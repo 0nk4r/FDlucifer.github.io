@@ -8987,4 +8987,24 @@
         <tag>vulnhub靶机练习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>kali-proxychains-ssr翻墙</title>
+    <url>/2019/02/13/kali-linux-proxychains-ssr/</url>
+    <content><![CDATA[<p><font color="blue">上网泄露ip地址是一个非常严重的问题，不仅涉及自己的隐私被盗，造成一定的安全隐患，严重时，甚至可能会遭遇牢狱之灾。下面就来谈谈kali linux下的proxychain的使用。带来网络自由的快感。</font></p>
+<p>首先执行下面的命令，打开没有修改proxychains代理前的浏览器，百度查看ip地址：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">firefox www.baidu.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/proxychains.jpg"></p>
+<p><img src="/images/proxychains1.jpg"></p>
+<a id="more"></a>
+
+
+]]></content>
+      <categories>
+        <category>kali配置</category>
+      </categories>
+      <tags>
+        <tag>proxychains</tag>
+      </tags>
+  </entry>
 </search>
