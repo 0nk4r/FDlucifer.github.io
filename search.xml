@@ -23,6 +23,8 @@
     <title>炸药制造(deep web)</title>
     <url>/2019/02/06/bomb-deep-web/</url>
     <content><![CDATA[<h3 id="从原料获取程度的难易和威力比值来说，最适合便是硝酸甘油炸药。硝酸甘油制法具体如下："><a href="#从原料获取程度的难易和威力比值来说，最适合便是硝酸甘油炸药。硝酸甘油制法具体如下：" class="headerlink" title="从原料获取程度的难易和威力比值来说，最适合便是硝酸甘油炸药。硝酸甘油制法具体如下："></a>从原料获取程度的难易和威力比值来说，最适合便是硝酸甘油炸药。硝酸甘油制法具体如下：</h3><p><strong><em>原料:</em></strong><font color="red">滴管，玻璃杯两个，碳酸钠（俗称苏达），浓硝酸，浓硫酸，甘油，这些都能在化学药品商店买到，当然为了避免暴露身份，比较推荐的方法是到中学化学实验室里面去偷，一盆水，不需要太满，一个搪瓷茶缸，最好还有温度计，注意家里用来量体温的温度计是不能用的，一是量程不够用，二来是体温计的特性在温度到达最高点之后除非用手甩，否则水银柱不会下降，那么您很有可能就此为了伟大事业献身。最后推荐ph试纸，当然可以用普通酸碱指示剂替代。</font></p>
+<a id="more"></a>
+
 <p><strong><em>步骤:</em></strong></p>
 <p>1、在一个玻璃杯中加上大概80毫升的水</p>
 <p>2、在另一个玻璃杯中除加上80毫升水外，基本添上一平勺碳酸钠，所谓的勺子是指不锈钢的西式餐勺，如果使用中式的汤匙那就差很多了。配成碳酸钠溶液。</p>
@@ -95,6 +97,8 @@
 <p>资料来源：Brainpan.zip/readme.txt</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MD5（brainpan.ova）= fc0f163220b9884df5dcc9cdc45361e4</span><br></pre></td></tr></table></figure>
 <p>资料来源：Brainpan.zip/md5.txtVulnHub独家！</p>
+<a id="more"></a>
+
 <h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p>nmap扫一顿</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@kali:~<span class="comment"># nmap -sn -v 192.168.56.0/24</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.56.115</span><br><span class="line">Host is up (0.00042s latency).</span><br><span class="line">MAC Address: 08:00:27:DE:BA:CA (Oracle VirtualBox virtual NIC)</span><br><span class="line"></span><br><span class="line">root@kali:~<span class="comment"># nmap -p- -v -Pn -sV 192.168.56.115</span></span><br><span class="line">PORT      STATE SERVICE VERSION</span><br><span class="line">9999/tcp  open  abyss?</span><br><span class="line">10000/tcp open  http    SimpleHTTPServer 0.6 (Python 2.7.3)</span><br></pre></td></tr></table></figure>
 
@@ -231,6 +235,8 @@
 <p>检查以确保brainpan2.ova具有以下校验和，以便您知道下载的文件是否完整：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">MD5：bf01f03ea0e7cea2553f74189ff35161SHA1：b46891cda684246832f4dbc80ec6e40a997af65a</span><br></pre></td></tr></table></figure>
 <p>将brainpan2.ova导入到您首选的管理程序中，并根据需要配置网络设置。<br>它会通过DHCP获得IP地址，建议在NAT内运行它，或者仅对主机OS可见，因为它容易受到攻击。<br>VulnHub独家.<br><a href="http%EF%BC%9A//blog.vulnhub.com/2013/11/competition-brainpan-2.html">博客文章</a></p>
+<a id="more"></a>
+
 <h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p>上nmap</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@kali:~<span class="comment"># nmap -sn -v 192.168.56.0/24</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.56.116</span><br><span class="line">Host is up (0.00027s latency).</span><br><span class="line">MAC Address: 08:00:27:6D:B8:70 (Oracle VirtualBox virtual NIC)</span><br></pre></td></tr></table></figure>
 
@@ -379,6 +385,8 @@
 <li>barrebas : <span class="exturl" data-url="aHR0cHM6Ly90d2l0dGVyLmNvbS9iYXJyZWJhcw==">https://twitter.com/barrebas<i class="fa fa-external-link-alt"></i></span></li>
 <li>Swappage : <span class="exturl" data-url="aHR0cHM6Ly90d2l0dGVyLmNvbS9Td2FwcGFnZQ==">https://twitter.com/Swappage<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
+<a id="more"></a>
+
 <h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><p>上nmap</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@kali:~<span class="comment"># nmap -sn -v 192.168.56.0/24</span></span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.56.117</span><br><span class="line">Host is up (0.00020s latency).</span><br><span class="line">MAC Address: 08:00:27:90:21:26 (Oracle VirtualBox virtual NIC)</span><br><span class="line"></span><br><span class="line">root@kali:~<span class="comment"># nmap -v -sV -Pn -p- 192.168.56.117 --system-dns</span></span><br><span class="line">PORT     STATE  SERVICE    VERSION</span><br><span class="line">1337/tcp open   waste?</span><br><span class="line">8080/tcp closed http-proxy</span><br></pre></td></tr></table></figure>
 
