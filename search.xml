@@ -8948,4 +8948,43 @@
         <tag>vulnhub靶机练习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>kali-linux-2019.4设置中文字体</title>
+    <url>/2019/12/04/kali-screen-shot/</url>
+    <content><![CDATA[<p>最近Kali linux更新到了2019.4版本，下载下来发现找不到设置中文的选项，经过在网上搜索一番发现一个开源的汉语字体包：文泉驿字体</p>
+<p>在终端中输入以下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt-get install ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，重启系统就会变成中文的系统啦</p>
+<a id="more"></a>
+
+<p>下边附上我更改为中文后的kali系统</p>
+<p><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/kaliscreen.jpg"></p>
+<p>下面再推荐一款kali下好用的截屏品工具:</p>
+<p>kali 截图工具Scrot的安装及使用:</p>
+<p>安装之前确认/etc/apt/sources.list源配好：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt-get install scrot</span><br></pre></td></tr></table></figure>
+
+<p>使用方式：</p>
+<ul>
+<li>1.截取整个桌面</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scrot</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2.指定保存目标文件夹和截图文件名(默认保存当前目录下)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scrot /root/Pictures/1.png</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3.截取特定窗口或矩形区域</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scrot -s</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>kali配置</category>
+      </categories>
+      <tags>
+        <tag>kali linux 2019.4</tag>
+      </tags>
+  </entry>
 </search>
