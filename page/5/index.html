@@ -127,17 +127,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">25</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">29</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">17</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">21</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">62</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">67</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -195,6 +195,204 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/29/pWnOS-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lucifer11.jpg">
+      <meta itemprop="name" content="lUc1f3r11">
+      <meta itemprop="description" content="all things about infosec & ctf">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lUc1f3r11's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/29/pWnOS-1/" class="post-title-link" itemprop="url">vulnhub靶机渗透[pWnOS-1.0]</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-29 15:10:49" itemprop="dateCreated datePublished" datetime="2019-12-29T15:10:49+08:00">2019-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-17 00:55:38" itemprop="dateModified" datetime="2020-08-17T00:55:38+08:00">2020-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vulnhub-walkthrough/" itemprop="url" rel="index"><span itemprop="name">vulnhub walkthrough</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>17 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="发布日期"><a href="#发布日期" class="headerlink" title="发布日期"></a>发布日期</h3><p>名称：pWnOS：1.0<br>发布日期：2008年6月27日</p>
+<h3 id="Readme-txt"><a href="#Readme-txt" class="headerlink" title="Readme.txt"></a>Readme.txt</h3><p>感谢您尝试使用pWnOS 1.0。开始之前需要注意的几件事。 pWnOS是使用VMware Workstation制作的，可以通过下载VMware Server或Vmware Player来启动…两者都是免费的！或免费的VMware Workstation（Windows）或VMware Fusion（OS X）。</p>
+<p>1.如果Vmware在首次引导时询问您是复制还是移动了该虚拟机，请单击MOVED！否则，网络设置可能会混乱。<br>2.当前已将虚拟机设置为使用桥接网络，但是您可能希望根据自己的喜好将其更改为NAT或“仅主机”。<br>3.可以在milw0rm.com上找到所有必需的工具/漏洞/所有内容。<br>4.有多种途径可以访问外壳。我创建了一个n00b路径和一个更高级的路径。看看是否可以同时获得它们！<br>我将pWnOS的难度评定为与De-Ice的2级磁盘大致相同…可能要困难一些。有关De-Ice渗透测试磁盘的信息，请参见<span class="exturl" data-url="aHR0cDovL3d3dy5kZS1pY2UubmV0Li8=">http://www.de-ice.net。<i class="fa fa-external-link-alt"></i></span><br>我希望你喜欢它！如果您有任何疑问或反馈，请给我发送电子邮件至<span class="exturl" data-url="bWFpbHRvOiYjOTg7JiMxMTE7JiN4NmU7JiMxMDA7JiN4MzA7JiN4MzA7JiM2NDsmIzEwMzsmIzEwOTsmIzk3OyYjMTA1OyYjeDZjOyYjeDJlOyYjOTk7JiMxMTE7JiMxMDk7">&#98;&#111;&#x6e;&#100;&#x30;&#x30;&#64;&#103;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#109;<i class="fa fa-external-link-alt"></i></span><br>bond00</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/12/29/pWnOS-1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/26/Smasher2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lucifer11.jpg">
+      <meta itemprop="name" content="lUc1f3r11">
+      <meta itemprop="description" content="all things about infosec & ctf">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lUc1f3r11's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/26/Smasher2/" class="post-title-link" itemprop="url">Hack-The-Box-walkthrough[Smasher2]</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-26 16:19:19" itemprop="dateCreated datePublished" datetime="2019-12-26T16:19:19+08:00">2019-12-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-17 00:59:58" itemprop="dateModified" datetime="2020-08-17T00:59:58+08:00">2020-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HackTheBox-walkthrough/" itemprop="url" rel="index"><span itemprop="name">HackTheBox walkthrough</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>51k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>46 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><font color="red">注意：本博客每一篇博客仅作记录供本人日后查阅。</font></p>
+<p>难度：疯狂<br>点数：50<br>发布日期：2019年6月01日<br>IP:10.10.10.135</p>
+<p>user.txt和root.txt的一血分别用了07小时13分55秒，20小时29分49秒，真够疯狂的。</p>
+<ul>
+<li><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/htb1.jpg"></li>
+<li><img src="http://www.hackthebox.eu/badge/image/235857" alt="my htb rank"></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/12/26/Smasher2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -921,7 +1119,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/12/Hackademic-RTB2/">
+    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/14/pWnOS2-0-Pre-Release/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lucifer11.jpg">
@@ -935,7 +1133,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/12/12/Hackademic-RTB2/" class="post-title-link" itemprop="url">vulnhub靶机渗透[Hackademic-RTB2]</a>
+            <a href="/2019/12/14/pWnOS2-0-Pre-Release/" class="post-title-link" itemprop="url">vulnhub靶机渗透[pWnOS2.0-Pre-Release]</a>
         </h2>
 
         <div class="post-meta">
@@ -945,14 +1143,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-12-12 13:53:31" itemprop="dateCreated datePublished" datetime="2019-12-12T13:53:31+08:00">2019-12-12</time>
+              <time title="Created: 2019-12-14 21:31:21" itemprop="dateCreated datePublished" datetime="2019-12-14T21:31:21+08:00">2019-12-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-17 00:50:45" itemprop="dateModified" datetime="2020-08-17T00:50:45+08:00">2020-08-17</time>
+                <time title="Modified: 2020-08-17 00:55:32" itemprop="dateModified" datetime="2020-08-17T00:55:32+08:00">2020-08-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -970,212 +1168,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>97k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1:28</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>名称：Hackademic：RTB2<br>发布日期：2011年9月6日</p>
-<h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><ul>
-<li>Download (Mirror): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9oYWNrYWRlbWljL0hhY2thZGVtaWMuUlRCMi56aXA=">https://download.vulnhub.com/hackademic/Hackademic.RTB2.zip<i class="fa fa-external-link-alt"></i></span></li>
-<li>Download (Torrent): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9oYWNrYWRlbWljL0hhY2thZGVtaWMuUlRCMi56aXAudG9ycmVudA==">https://download.vulnhub.com/hackademic/Hackademic.RTB2.zip.torrent<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<p>描述：</p>
-<p>这是mr.pr0n提出的第二个现实黑客攻击挑战<br>下载目标并获得root。<br>毕竟，尝试读取根目录中文件“ key.txt”的内容。<br>请享用！</p>
-<p>漏洞：</p>
-<ul>
-<li>纯文本密码</li>
-<li>特权提升</li>
-<li>SQL注入</li>
-<li>不受限制地上传危险类型的文件</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/12/Hackademic-RTB2/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/11/windowspy23/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lucifer11.jpg">
-      <meta itemprop="name" content="lUc1f3r11">
-      <meta itemprop="description" content="all things about infosec & ctf">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lUc1f3r11's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/11/windowspy23/" class="post-title-link" itemprop="url">windows同时安装python2和python3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-12-11 15:55:12" itemprop="dateCreated datePublished" datetime="2019-12-11T15:55:12+08:00">2019-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-17 01:01:02" itemprop="dateModified" datetime="2020-08-17T01:01:02+08:00">2020-08-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.6k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>（本文仅作记录以备忘）</p>
-<p><font color="green">Python 软件基金会宣布，到 2020 年元旦，将不再为编程语言 Python 2.x 分支提供任何支持。这一天将标志着一出延续多年的戏剧的高潮：Python 从较旧的、功能较弱的、广泛使用的版本过渡到更新的、更强大的版本。然而，Python 的新版本在采用上仍然落后于它的旧版本。未来几年里，还会有很多人继续使用 Python 2 编写的程序,有些python程序使用python2开发的，比如sqlmap，与 Python 2 相比，Python 3 有着无数的技术和最终用户增强功能，但却未能永久取代 Python 2。PyPI 存储库中托管的大多数流行包都支持 Python 3（该库是可重用 Python 代码的第一站）。Python 3 现在已经成为许多 Linux 发行版默认的 Python 解释器。大多数最近出版的书籍、编码学院（coding academy）和在线课程都向初学者推荐了 Python 3。也有的程序是python3开发的就造成了运行不同的python程序需要切换不同的python版本的问题，下面是如何让python2和python3在同一windows操作系统上共存的问题。</font></p>
-<p>本人再网上搜索了大量文章后，有的文章是同时安装python2和python3，但是此种方法有些复杂，而且出错了也不好解决，创建虚拟环境还需要很多命令，使用完还需要删除虚拟环境，还要改python.exe的名字，还要折腾pip，经过对比与总结，发现下面的操作方法最为实用可靠，命令也少。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/11/windowspy23/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://fdlucifer.github.io/2019/12/11/Hackademic-RTB1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lucifer11.jpg">
-      <meta itemprop="name" content="lUc1f3r11">
-      <meta itemprop="description" content="all things about infosec & ctf">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="lUc1f3r11's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/11/Hackademic-RTB1/" class="post-title-link" itemprop="url">vulnhub靶机渗透[Hackademic-RTB1]</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-12-11 10:29:26" itemprop="dateCreated datePublished" datetime="2019-12-11T10:29:26+08:00">2019-12-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-17 00:50:51" itemprop="dateModified" datetime="2020-08-17T00:50:51+08:00">2020-08-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vulnhub-walkthrough/" itemprop="url" rel="index"><span itemprop="name">vulnhub walkthrough</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>14k</span>
+              <span>13k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -1194,26 +1187,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>名称：Hackademic：RTB1<br>发布日期：2011年9月6日</p>
-<h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><ul>
-<li>Download (Mirror): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9oYWNrYWRlbWljL0hhY2thZGVtaWMuUlRCMS56aXA=">https://download.vulnhub.com/hackademic/Hackademic.RTB1.zip<i class="fa fa-external-link-alt"></i></span></li>
-<li>Download (Torrent): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9oYWNrYWRlbWljL0hhY2thZGVtaWMuUlRCMS56aXAudG9ycmVudA==">https://download.vulnhub.com/hackademic/Hackademic.RTB1.zip.torrent<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
+          <p>名称：pWnOS：2.0（预发布）<br>发布日期：2011年7月4日</p>
+<p>下载：<br>Download: <span class="exturl" data-url="aHR0cDovL3B3bm9zLmNvbS9maWxlcy9wV25PU192Mi4wLjd6">http://pwnos.com/files/pWnOS_v2.0.7z<i class="fa fa-external-link-alt"></i></span><br>Download (Mirror): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9wd25vcy9wV25PU192Mi4wLjd6">https://download.vulnhub.com/pwnos/pWnOS_v2.0.7z<i class="fa fa-external-link-alt"></i></span><br>Download (Torrent): <span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC52dWxuaHViLmNvbS9wd25vcy9wV25PU192Mi4wLjd6LnRvcnJlbnQ=">https://download.vulnhub.com/pwnos/pWnOS_v2.0.7z.torrent<i class="fa fa-external-link-alt"></i></span></p>
 <p>描述：</p>
-<p>这是mr.pr0n提出的第一个现实性黑客攻击挑战<br>下载目标并获得root。<br>尝试读取根目录中文件“ key.txt”的内容。<br>请享用！</p>
-<p>漏洞：</p>
-<ul>
-<li>纯文本密码</li>
-<li>提权</li>
-<li>重用凭证</li>
-<li>SQL注入</li>
-<li>不受限制地上传危险类型的文件</li>
-</ul>
-<p>靶机打开界面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/vulnhub37.jpg"></p>
+<p>pWnOS v2.0（预发布！）</p>
+<p>目标：<br>root…赢！<br>关于：<br>pWnOS v2.0是一个Virutal机器映像，它托管一台服务器以进行实践渗透测试。 它将测试您利用服务器的能力，并包含多个达到目标（根）的入口点。 它是为与WMWare Workstation 7.0一起使用而设计的，但也可以与大多数其他虚拟机软件一起使用。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/12/11/Hackademic-RTB1/#more" rel="contents">
+              <a class="btn" href="/2019/12/14/pWnOS2-0-Pre-Release/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1304,20 +1285,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
