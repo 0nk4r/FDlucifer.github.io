@@ -9338,4 +9338,38 @@
         <tag>HackTheBox靶机练习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Hack-The-Box-walkthrough[laser]</title>
+    <url>/2020/08/19/laser/</url>
+    <content><![CDATA[<h3 id="introduce"><a href="#introduce" class="headerlink" title="introduce"></a>introduce</h3><p>OS:     Linux<br>Difficulty:     Insane<br>Points:    50<br>Release:    08 Aug 2020<br>IP:    10.10.10.201</p>
+<p>User Blood InfoSecJack    00 days, 00 hours, 04 mins, 04 seconds.<br>Root Blood bjornmorten    00 days, 23 hours, 18 mins, 35 seconds.</p>
+<ul>
+<li><p><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/htb68.jpg"></p>
+</li>
+<li><p><img src="http://www.hackthebox.eu/badge/image/235857" alt="my htb rank"></p>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="information-gathering"><a href="#information-gathering" class="headerlink" title="information gathering"></a>information gathering</h3><p>first use nmap as usaul</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>HackTheBox walkthrough</category>
+      </categories>
+      <tags>
+        <tag>HackTheBox靶机练习</tag>
+      </tags>
+  </entry>
 </search>
