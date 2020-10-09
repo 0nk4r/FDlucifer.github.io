@@ -30,7 +30,7 @@
 <meta property="og:description" content="常规木马免杀处理-查杀情况记录cs木马免杀比例exe64       41&#x2F;72exe32       40&#x2F;72 +upx之后 123cs64           30&#x2F;72       能过火绒    无法过windows defender自解压打包后    23&#x2F;71       能过火绒    无法过windows defender   （success）cs86           45">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-09T07:44:11.000Z">
-<meta property="article:modified_time" content="2020-10-09T07:44:55.531Z">
+<meta property="article:modified_time" content="2020-10-09T07:48:33.044Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="免杀">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-10-09 15:44:11 / Modified: 15:44:55" itemprop="dateCreated datePublished" datetime="2020-10-09T15:44:11+08:00">2020-10-09</time>
+              <time title="Created: 2020-10-09 15:44:11 / Modified: 15:48:33" itemprop="dateCreated datePublished" datetime="2020-10-09T15:44:11+08:00">2020-10-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,6 +273,8 @@
         <h1 id="常规木马免杀处理-查杀情况记录"><a href="#常规木马免杀处理-查杀情况记录" class="headerlink" title="常规木马免杀处理-查杀情况记录"></a>常规木马免杀处理-查杀情况记录</h1><h3 id="cs木马免杀比例"><a href="#cs木马免杀比例" class="headerlink" title="cs木马免杀比例"></a>cs木马免杀比例</h3><p>exe64       41/72<br>exe32       40/72</p>
 <p>+upx之后</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cs64           30/72       能过火绒    无法过windows defender</span><br><span class="line">自解压打包后    23/71       能过火绒    无法过windows defender   （success）</span><br><span class="line">cs86           45/72       被火绒查杀  无法过windows defender</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
 
 <h3 id="veil"><a href="#veil" class="headerlink" title="veil"></a>veil</h3><p>安装docker:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">添加Docker PGP key:</span><br><span class="line">curl -fsSL https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/debian/gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line">配置Docker APT repository：</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;deb https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/debian/ buster stable&#x27;</span> | sudo tee /etc/apt/sources.list.d/docker.list</span><br><span class="line"></span><br><span class="line">apt-get update</span><br><span class="line">apt-get remove docker docker-engine docker.io</span><br><span class="line">apt-get install docker-ce</span><br><span class="line"></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
