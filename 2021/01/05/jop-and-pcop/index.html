@@ -31,7 +31,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop.jpg">
 <meta property="article:published_time" content="2021-01-05T11:33:40.000Z">
-<meta property="article:modified_time" content="2021-01-05T18:12:02.225Z">
+<meta property="article:modified_time" content="2021-01-05T18:15:52.349Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -234,7 +234,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-06 02:12:02" itemprop="dateModified" datetime="2021-01-06T02:12:02+08:00">2021-01-06</time>
+                <time title="Modified: 2021-01-06 02:15:52" itemprop="dateModified" datetime="2021-01-06T02:15:52+08:00">2021-01-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,6 +284,8 @@
       
         <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
 <p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达性<br>权力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
+<a id="more"></a>
+
 <h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞<br>并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了<br>越来越复杂的攻击和相应的攻击防御。</p>
 <p>软件利用的最早形式之一是代码注入攻击，其中恶意消息包括机器码，并使用缓冲区溢出或其他技术将控制流重定向到攻击者提供的代码。然而，随着cpu和操作系统的出现，这种威胁在很多情况下都得到了缓解。特别地，强制属性“一个给定的内存页永远不会同时具有这两个属性”同时可写和可执行。基本前提其背后的原因是，如果不能向某个页面写入代码，以后又不能从该页面执行代码，那么代码注入就不可能实现。</p>
 <p>不幸的是，攻击者已经开发出了创新的方法。例如，一种可能的方法是发射一种代码重用攻击，其中现有代码被重新用于一个恶意的结束。最简单和最常见的形式，这就是返回libc技术。在这个场景中,攻击者使用缓冲区溢出来覆盖部分带有返回地址和列表参数的堆栈libc(核心C库，动态链接到类unix环境中的所有应用程序)中的函数。这允许攻击者执行任意序列调用libc函数，常见的例子是调用system(“/bin/sh”)启动shell。</p>

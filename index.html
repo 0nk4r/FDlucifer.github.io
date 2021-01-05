@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-06 02:12:02" itemprop="dateModified" datetime="2021-01-06T02:12:02+08:00">2021-01-06</time>
+                <time title="Modified: 2021-01-06 02:15:52" itemprop="dateModified" datetime="2021-01-06T02:15:52+08:00">2021-01-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,30 +273,14 @@
       
           <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
 <p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达性<br>权力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
-<h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞<br>并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了<br>越来越复杂的攻击和相应的攻击防御。</p>
-<p>软件利用的最早形式之一是代码注入攻击，其中恶意消息包括机器码，并使用缓冲区溢出或其他技术将控制流重定向到攻击者提供的代码。然而，随着cpu和操作系统的出现，这种威胁在很多情况下都得到了缓解。特别地，强制属性“一个给定的内存页永远不会同时具有这两个属性”同时可写和可执行。基本前提其背后的原因是，如果不能向某个页面写入代码，以后又不能从该页面执行代码，那么代码注入就不可能实现。</p>
-<p>不幸的是，攻击者已经开发出了创新的方法。例如，一种可能的方法是发射一种代码重用攻击，其中现有代码被重新用于一个恶意的结束。最简单和最常见的形式，这就是返回libc技术。在这个场景中,攻击者使用缓冲区溢出来覆盖部分带有返回地址和列表参数的堆栈libc(核心C库，动态链接到类unix环境中的所有应用程序)中的函数。这允许攻击者执行任意序列调用libc函数，常见的例子是调用system(“/bin/sh”)启动shell。</p>
-<p>虽然return-into-libc功能强大，但它不允许在被利用的应用程序的上下文中进行任意计算。为此，攻击者可能转向返回导向编程(ROP)。与前面一样，ROP覆盖<br>带有返回地址和参数的堆栈。然而地址现在指向任意现有的代码库，唯一的要求是<br>这些代码片段或gadgets以ret指令结束,将控制转移到下一个gadgets.Return-oriented编程已经证明在上是Turing complete的各种平台和代码库，和<br>自动化技术使此类攻击的开发成为一个简单的过程。真实世界该技术的危险性在Checkoway等人的研究中得到证实。用它来破坏一个常用的电子投票机的完整性。</p>
-<p>自从面向返回的编程出现以来，人们提出了许多防御措施来检测或防止基于rop的攻击。例如，DynIMA检测每个以ret结尾的小指令序列的连续执行，并怀疑它们是ROP中的gadgets攻击。DROP观察到，ROP执行时连续弹出的返回地址总是指向同一个地址特定的内存空间，并认为这是rop固有的对其检测有用的特征。无返回方法更进一步，消除了程序中的所有ret指令，从而消除了以返回为导向的gadgets，排除了<br>ROP-based攻击。</p>
-<ul>
-<li><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop.jpg"></li>
-</ul>
-<p>在本文中，提出了一种替代的攻击范式称为面向跳转的编程(JOP)。在一个JOP-based攻击时，攻击者放弃对堆栈的所有依赖控制流和ret用于gadgets的发现和链接，而不是仅仅使用一个间接跳转序列指令。因为几乎所有已知的防守技术对抗ROP取决于它对堆栈的依赖，或ret, 它们中有一种能够发现或防御这种情况的新方法。一个例外是强制执行的系统完全控制流完整性.不幸的是，这类系统并没有被广泛部署，可能是由于担心它们的复杂性和负面的性能影响。</p>
-<p>与ROP类似，JOP的构造模块仍然很短称为gadget的代码序列。然而，并没有结束<br>每个这样的gadgets都以一个间接的jmp结尾。其中一些jmp指令是由编译器。其他的不是有意的，而是由于x86指令的密度和未对齐的可行性执行。然而，与ROP不同的是，ret设备可以控制的内容自然返回控件栈，jmp gadgets正在执行到它的目标的单向控制流传输，这使得很难重新获得控制，将下一个面向跳转的执行链返回gadgets。</p>
-<p>我们注意到一种基于间接jmps的代码重用攻击早在2003年就被作为一种理论可能性提出了。然而，一直存在着一个尚未解决的问题:攻击者如何保持对程序的控制执行。没有像ret这样的共同控制机制把它们统一起来，却不清楚如何把这些gadgets与单向jmps连在一起</p>
-<p>我们对这个问题的解决方案是新提出的gadgets的类，dispatcher gadgets。这样的gadgets旨在控制各种面向跳转的控制流gadget。更具体地说，如果把其他gadgets看作执行基本操作功能gadgets,dispatcher gadgets是专门选择来确定的,接下来将调用functional gadget。自然地,dispatcher gadgets可以维护一个内部分派表，该表显式地指定函数控制流gadgets。此外，它确保结束的jmp指令将功能gadgets把控制权转移回调度器gadgets。通过这样做，面向跳转的计算变得可行。</p>
-<p>为了实现相同的Turing-complete表达ROP的力量，在识别各种jump-oriented gadgets用于内存加载/存储、算术计算、二进制操作、条件分支和系统调用的gadgets。为此，提出了一种算法来发现和收集jump-oriented gadgets，将它们组织到不同的类别中，并将它们保存在一个中心化gadget目录中。</p>
-<p>综上所述，本文的贡献如下:</p>
-<ol>
-<li><p>扩展代码重用攻击的分类,x86包含了一种新的攻击类型: jump-oriented<br>编程。与现有的return-oriented编程，攻击有不依赖栈上的控制流的好处。相反,介绍执行功能的设备要扮演这个角色的dispatcher gadgets的概念。</p>
-</li>
-<li><p>提出一种基于启发式的算法在x86上发现各种jump-oriented gadgets，包括critical dispatcher gadgets。研究结果表明所有这些gadgets都在动态链接到几乎所有UNIX应用程序的GNU libc中充分可用。</p>
-</li>
-<li><p>证明这种技术的有效性基于gadgets的jump-oriented的shellcode攻击<br>由我们的算法发现。</p>
-</li>
-</ol>
-<p>论文的其余部分组织如下: 第2部分提供x86相关方面的背景知识,架构和现有ROP方法。接下来，第3节解释了新的面向跳转的编程攻击的设计，然后第4节给出了一个实现一个x86 Linux系统，包括一个具体的攻击示例。第5节检查了方法的局限性，并探索了改进的方法。最后，第6节介绍,第七部分是本文的总结部分。</p>
-<h3 id="2-背景"><a href="#2-背景" class="headerlink" title="2.背景"></a>2.背景</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/05/jop-and-pcop/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -338,10 +322,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-01-05 19:32:43 / Modified: 19:50:52" itemprop="dateCreated datePublished" datetime="2021-01-05T19:32:43+08:00">2021-01-05</time>
+              <time title="Created: 2021-01-05 19:32:43" itemprop="dateCreated datePublished" datetime="2021-01-05T19:32:43+08:00">2021-01-05</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-06 02:15:42" itemprop="dateModified" datetime="2021-01-06T02:15:42+08:00">2021-01-06</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -362,7 +352,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>5</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
