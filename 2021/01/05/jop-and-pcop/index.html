@@ -30,8 +30,10 @@
 <meta property="og:description" content="摘要面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。 本文介绍了一种新的代码重用攻击">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop2.jpg">
 <meta property="article:published_time" content="2021-01-05T11:33:40.000Z">
-<meta property="article:modified_time" content="2021-01-05T18:15:52.349Z">
+<meta property="article:modified_time" content="2021-01-06T16:34:00.993Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -234,7 +236,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-06 02:15:52" itemprop="dateModified" datetime="2021-01-06T02:15:52+08:00">2021-01-06</time>
+                <time title="Modified: 2021-01-07 00:34:00" itemprop="dateModified" datetime="2021-01-07T00:34:00+08:00">2021-01-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,14 +265,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.9k</span>
+              <span>5.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>5 mins.</span>
             </span>
 
         </div>
@@ -282,11 +284,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
-<p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达性<br>权力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
+<p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达能力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
 <a id="more"></a>
 
-<h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h3><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞<br>并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了<br>越来越复杂的攻击和相应的攻击防御。</p>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞<br>并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了<br>越来越复杂的攻击和相应的攻击防御。</p>
 <p>软件利用的最早形式之一是代码注入攻击，其中恶意消息包括机器码，并使用缓冲区溢出或其他技术将控制流重定向到攻击者提供的代码。然而，随着cpu和操作系统的出现，这种威胁在很多情况下都得到了缓解。特别地，强制属性“一个给定的内存页永远不会同时具有这两个属性”同时可写和可执行。基本前提其背后的原因是，如果不能向某个页面写入代码，以后又不能从该页面执行代码，那么代码注入就不可能实现。</p>
 <p>不幸的是，攻击者已经开发出了创新的方法。例如，一种可能的方法是发射一种代码重用攻击，其中现有代码被重新用于一个恶意的结束。最简单和最常见的形式，这就是返回libc技术。在这个场景中,攻击者使用缓冲区溢出来覆盖部分带有返回地址和列表参数的堆栈libc(核心C库，动态链接到类unix环境中的所有应用程序)中的函数。这允许攻击者执行任意序列调用libc函数，常见的例子是调用system(“/bin/sh”)启动shell。</p>
 <p>虽然return-into-libc功能强大，但它不允许在被利用的应用程序的上下文中进行任意计算。为此，攻击者可能转向返回导向编程(ROP)。与前面一样，ROP覆盖<br>带有返回地址和参数的堆栈。然而地址现在指向任意现有的代码库，唯一的要求是<br>这些代码片段或gadgets以ret指令结束,将控制转移到下一个gadgets.Return-oriented编程已经证明在上是Turing complete的各种平台和代码库，和<br>自动化技术使此类攻击的开发成为一个简单的过程。真实世界该技术的危险性在Checkoway等人的研究中得到证实。用它来破坏一个常用的电子投票机的完整性。</p>
@@ -309,7 +311,24 @@
 </li>
 </ol>
 <p>论文的其余部分组织如下: 第2部分提供x86相关方面的背景知识,架构和现有ROP方法。接下来，第3节解释了新的面向跳转的编程攻击的设计，然后第4节给出了一个实现一个x86 Linux系统，包括一个具体的攻击示例。第5节检查了方法的局限性，并探索了改进的方法。最后，第6节介绍,第七部分是本文的总结部分。</p>
-<h3 id="2-背景"><a href="#2-背景" class="headerlink" title="2.背景"></a>2.背景</h3>
+<h2 id="2-背景"><a href="#2-背景" class="headerlink" title="2.背景"></a>2.背景</h2><p>了解本文的贡献，有必要简要总结一下面向返回编程背后的技术。由于系统基于32位x86 architecture2，讨论主要集中在该平台。</p>
+<p>如图所示，x86堆栈由两个专用的CPU寄存器: esp的“堆栈指针”寄存器，它指向堆栈的顶部，和ebp的“基础”指针”寄存器，它指向当前的底部堆栈帧。因为堆栈向下增长，也就是增长在地址递减方向上，esp&lt;=ebp。每一个堆栈帧存储每个函数调用的参数，返回地址、以前的堆栈帧指针和自动(局部)变量(如果有的话)。堆栈内容或指针可以是直接通过两个堆栈寄存器进行操作，或隐式地通过各种CPU操作码，如push和pop。指令集包括执行函数调用(call)和从函数调用返回(ret)的操作码。调用<br>指令推入下一条指令的地址(返回地址)到堆栈上。相反，ret指令将堆栈弹出到eip中，直接恢复执行后调用。</p>
+<ul>
+<li><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop1.jpg"></li>
+</ul>
+<p>攻击者可以利用缓冲区溢出漏洞或覆盖部分堆栈的其他缺陷，如替换当前帧的返回地址和提供的值。在传统的返回到libc方法，这个新值是指向libc中由攻击者选择的函数的指针。后受害者程序使用新值并输入函数，即覆盖返回地址旁边的内存单元被函数解释为参数，允许攻击者指定的任意函数的执行参数。通过将这些恶意堆栈帧链接在一起，可以执行一系列函数。虽然这无疑是一种非常强大的能力，它不允许攻击者执行任意计算。为攻击需要启动另一个进程(例如，通过exec())或改变内存权限，使传统的代码注入攻击成为可能(例如，通过mprotect())。</p>
+<p>由于这些操作可能导致检测或拦截，隐蔽的攻击者可能转而转向面向返回的编程，它允许任意计算在易受攻击的应用程序的上下文中。面向返回的编程是由返回的洞察力驱动的栈上的地址可以指向任何地方，而不只是指向函数的开始，就像经典的return-into-libc攻击一样。因此，它可以通过一系列直接控制流这些是现有代码的小片段，每个片段以ret结尾小的代码片段称为gadgets，大的代码片段称为gadgets足够的代码库(如libc)，有大量的选择可供选择的gadgets在x86平台上，选择变得更大，因为指令是可变的长度，因此，如果解码从不同的字节开始，CPU将以不同的方式解释指令的原始字节偏移量。</p>
+<p>基于此，面向返回的程序只是一个简单的控件中列出的gadgets地址和数据值序列存在漏洞的程序的内存。在传统的攻击中，是溢出到堆栈中，但是可以加载缓冲区其他地方，如果攻击者可以重定向堆栈指针esp到新的位置。可以想到gadgets的地址作为操作码在一个新的面向返回的机器，堆栈指针esp是它的程序计数器。在这个定义下, 就像传统代码的基本块没有一样显式排列程序计数器，一个“基本块”面向返回的代码不显式排列栈指针esp。相反，条件分支可以通过修改esp的值来创建逻辑循环。算术、逻辑和条件的组合分支产生了一个Turing complete面向返回的机器。首先是一组满足这些要求的gadget在x86上发现的，后来扩展到许多其他的平台。此外，这类攻击还可以执行任意系统调用，因为这是一个简单问题调用适当库例程，甚至直接访问调用系统内核接口。因为这个，以return-oriented的攻击在表现方式上等同于成功的代码注入。</p>
+<p>一些研究人员试图解决这个问题面向返回的编程问题。每一种防御系统都能识别出一个特定的特征以回击为导向的攻击，并围绕它开发一种检测或预防措施。有些强制使用后进先出堆栈不变式，有些检测ret的过度执行指令，还有一个甚至从内核中删除了ret操作码的每个实例。这些技术的共同之处在于，它们都假定攻击者必须使用堆栈来控制流。本文介绍了jump-oriented编程一个新的替代方案，不依赖于堆栈，并且因此对这种防御免疫。</p>
+<p>威胁模型在本工作中，假设对手可以将payload(例如，调度表-第3节)放入内存和增益控制寄存器的数量，特别是指令指针eip转移程序执行。这个假设是合理的，因为一些常见的漏洞，如缓冲区溢出、堆溢出和格式字符串错误存在满足这一要求。还假设存在一个重要的代码库，以便在其中查找gadget。与ROP一样，发现仅使用libc的内容可以实现，它是有类的unix环境动态链接的进程。在防御方面，脆弱的程序受到严格强制执行代码完整性的保护，从而击败传统代码注入攻击.</p>
+<h2 id="3-设计"><a href="#3-设计" class="headerlink" title="3.设计"></a>3.设计</h2><p>下图比较了面向返回的编程(ROP)以及我们提出的jump-oriented编程(JOP)。就像在ROP是一个面向跳转的程序，它由一组gadgets地址和加载到内存中的数据值地址组成, 类似于新jump-oriented机器中的操作码。在ROP中，这些数据存储在堆栈中，栈指针esp充当“程序计数器” return-oriented程序。JOP并不局限于使用esp引用它的gadgets地址，控制流不会按照ret的指示被驱动。相反，JOP使用调度表保存gadget地址和数据。“程序计数器”是指向分派表的任何寄存器。控制流是由执行的特殊分派器gadgets顺序驱动gadgets的。在每次调用时，调度程序推进虚拟程序计数器，并启动相关的gadgets。</p>
+<ul>
+<li><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop2.jpg"></li>
+</ul>
+<p>给出一个JOP程序的控制流程示例。在这个例子中，实际上增加了两个内存值(分别由eax和ebx指向), store将总和存入另一个由ecx指向的内存位置，即[ecx] ← [eax] + [ebx]。</p>
+<p>这项工作的主要目标是证明jump-oriented编程的可行性。证明它的表达能力可以与return-oriented编程相媲美。但是，通过不依赖堆栈进行控制流，JOP可以潜在地使用任何内存范围，甚至包括不连续内存，以保存调度表。</p>
+<p>下面，进一步阐述dispatcher gadgets(第3.1节)和功能gadgets(第3.2节)，它们的基本运算包括实际计算。在此之后，讨论常用的代码库(第3.3节)。最后，探索引导一个jump-oriented程序的可能方法(3.4节)。</p>
+<h3 id="3-1分配器gadget"><a href="#3-1分配器gadget" class="headerlink" title="3.1分配器gadget"></a>3.1分配器gadget</h3>
     </div>
 
     
@@ -465,7 +484,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">3.设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E5%88%86%E9%85%8D%E5%99%A8gadget"><span class="nav-number">4.1.</span> <span class="nav-text">3.1分配器gadget</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -562,7 +581,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">26:08</span>
+    <span title="Reading time total">26:10</span>
 </div>
   <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
   </div>

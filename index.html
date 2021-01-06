@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-06 02:15:52" itemprop="dateModified" datetime="2021-01-06T02:15:52+08:00">2021-01-06</time>
+                <time title="Modified: 2021-01-07 00:34:00" itemprop="dateModified" datetime="2021-01-07T00:34:00+08:00">2021-01-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,14 +252,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.9k</span>
+              <span>5.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>5 mins.</span>
             </span>
 
         </div>
@@ -271,8 +271,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
-<p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达性<br>权力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
+          <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>面向返回的编程是一种有效的代码重用攻击，在这种攻击中，在现有的二进制文件中找到以ret指令结尾的短代码序列，并通过控制堆栈以任意顺序执行。这允许对于Turing-complete行为在目标程序中没有需要注入攻击代码，从而显著否定当前的代码注入防御努力。在另一方面，它的固有特性，如对堆栈的依赖和返回的gadgets的连续执行，促使各种各样的防御发现或阻止它的发生。</p>
+<p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达能力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/01/05/jop-and-pcop/#more" rel="contents">
@@ -1322,7 +1322,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">26:08</span>
+    <span title="Reading time total">26:10</span>
 </div>
   <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
   </div>
