@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop2.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop3.jpg">
 <meta property="article:published_time" content="2021-01-05T11:33:40.000Z">
-<meta property="article:modified_time" content="2021-01-07T18:53:30.058Z">
+<meta property="article:modified_time" content="2021-01-07T19:36:04.082Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -237,7 +237,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-08 02:53:30" itemprop="dateModified" datetime="2021-01-08T02:53:30+08:00">2021-01-08</time>
+                <time title="Modified: 2021-01-08 03:36:04" itemprop="dateModified" datetime="2021-01-08T03:36:04+08:00">2021-01-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,14 +266,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>18k</span>
+              <span>20k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>16 mins.</span>
+              <span>18 mins.</span>
             </span>
 
         </div>
@@ -422,7 +422,28 @@
 <p>(1) 可变长度指令允许对代码流进行多种解释，<br>(2) 间接分支指令从特别常见的0xff字节开始。</p>
 <p>深入分析将JOP应用于替代平台(如MIPS)的可行性和效率，包括dispatcher gadget的可移植性和相关的调度表(第3节)，是留给未来工作的一个重要问题。</p>
 <p>第三，如果检查两种不同编程模型的性质，即ROP和JOP，漏洞的基础不是返回或间接跳转，而是允许进入可执行程序或库中的任何地址的混杂行为。为了防御它们，有必要加强控制流的完整性。从另一个角度来看，可能会想当然地认为，这种攻击可以通过识别异常(如类似调度器的行为或高频的间接跳转)来简单地击败。不幸的是，事实并非如此。通过安排执行长时间运行的函数并定期更改调度程序，可以很容易地避免此类防御。接下来，将检查相关的工作并讨论一些正交防御，这些防御可以用来阻止或阻止return- or jump-oriented的编程。</p>
-<h2 id="6-相关工作"><a href="#6-相关工作" class="headerlink" title="6.相关工作"></a>6.相关工作</h2>
+<h2 id="6-相关工作"><a href="#6-相关工作" class="headerlink" title="6.相关工作"></a>6.相关工作</h2><ul>
+<li>反ROP防御</li>
+</ul>
+<p>最近，一些防御系统被提出来检测或防止return-oriented攻击。例如，ROPdefender基于单独的阴影堆栈，提出了一种二进制重写方法来确保每个返回目标的有效性，从而阻止了面向返回的gadget的执行。DROP和DynIMA通过监视每个以ret结尾的短指令序列的执行来检测基于rop的攻击。无返回方法认识到构建gadget和链接需要ret，并开发了一种基于编译器的方法来消除ret操作码的存在。相反，通过避免依赖ret或返回堆栈来发起基于jop的攻击，jump-oriented的编程对这些防御免疫。在这方面，JOP反映了正在进行的安全军备竞赛的趋势。最近，Onarlioglu等人介绍了G-Free，这是一种编译器，旨在生成无gadget的二进制文件。这是通过删除所有非预期的控制流传输，然后通过指针加密和堆栈cookie保护预期的控制流来实现的。由于该方案保护了间接跳转和调用指令，因此可以防止它们被滥用，并从本质上将现有的ROP攻击反泛化为传统的return-into-libc攻击。</p>
+<p>独立于工作，Checkoway等人提出了一种并行的方法，用x86上的pop+jmp取代ROP中的ret，这与原始ROP模型有了进一步的发展。然而，pop+jmp序列很少，因此需要“自带 pop+jmp”范式，在这种范式中，序列必须在一个特别大的代码库中找到。事实上，对32位x86平台上Debian Linux 5.0.4中默认libc的文本部分的分析并没有得出一个pop+jmp序列。此外，使用这样的序列仍然需要依赖堆栈来控制gadget之间的控制流。相比之下，JOP模型没有这样的限制，因此威胁到更广泛的应用程序和环境。在这项工作中还提出了一个ARM实现，它依赖于一个“update-load-branch” gadget来维护控制流。这种相似性为一种理论提供了证据，即jump-oriented的攻击可能是一种跨平台威胁，而不限于x86。</p>
+<p>从另一个角度来看，其他正交防御方案(如。已经被提出来抵御代码注入攻击。具体来说，地址空间布局随机化(ASLR)会随机化正在运行的程序的内存布局，这使得很难确定libc和其他合法代码中的地址，这些地址是基于返回到libc或基于ROP/jop的攻击所依赖的。然而，有一些反随机攻击绕过ASLR或限制其有效性。相反，指令集随机化(ISR)将每个运行进程的指令集随机化，这样即使攻击可能成功劫持了控制流，注入的攻击代码中的指令也无法正确执行。然而，基于return-into-libc和ROP/jop的攻击是无效的。</p>
+<ul>
+<li>内存安全</li>
+</ul>
+<p>在过去，许多防御机制也被提出来更好地加强记忆安全。例如，CFI和程序引导被设计用来保护正在运行的程序的控制流完整性属性。DFI等基于控制流完整性属性，并进一步扩展它以实现其他类型的内存安全(例如，数据流完整性)。注意，如果严格执行控制流完整性，ROP和JOP首先就会被阻止劫持控制流。然而，精确的CFI实施需要复杂的代码分析，这可能很难获得，特别是对于具有大型代码库的程序，包括libc或现代操作系统内核。此外，CFI并没有得到广泛的部署，这可能是由于对性能的担忧，特别是在实时执行的情况下。</p>
+<ul>
+<li>其它代码复用</li>
+</ul>
+<p>最近，研究人员发现了一些有趣的应用程序，可以重用恶意代码中的某些代码片段，以便更好地理解它们。例如，Caballero等人提出了BCR，这是一种旨在从(恶意软件)二进制文件中提取函数，以便以后可以重用的工具。Kolbitsch等人开发了Inspector，以重用二进制文件中的现有代码，并将其转换为一个独立的gadget，以后可以用来(重新)执行特定的恶意软件功能。相比之下，ROP和JOP可以重用漏洞程序的合法代码来构造任意计算，而不需要注入代码。</p>
+<h2 id="7-结论"><a href="#7-结论" class="headerlink" title="7.结论"></a>7.结论</h2><p>在本文中，提出了一类新的代码重用攻击—jump-oriented编程。这种攻击消除了return-oriented的编程对堆栈和rets的依赖，但没有削弱它的表达能力。特别是，在这种攻击下，可以构建普通功能gadget，并将它们与每个执行特定原始操作的gadget连接起来。然而，由于缺乏ret将它们连接起来，这种攻击依赖于dispatcher gadget来分派和执行下一个功能强大的gadget。成功地开发了一个jump-oriented编程的shellcode攻击示例，GNU libc中丰富的jmp gadget表明了这种攻击的实用性和有效性。</p>
+<h2 id="翻译自"><a href="#翻译自" class="headerlink" title="翻译自"></a>翻译自</h2><ul>
+<li><p>便于理解查阅学习</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.comp.nus.edu.sg/~liangzk/papers/asiaccs11.pdf">Jump Oriented Programming A New Class of Code Reuse<br>Attack</a></p>
+</li>
+</ul>
+
     </div>
 
     
@@ -578,7 +599,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">3.设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%88%86%E9%85%8D%E5%99%A8gadget"><span class="nav-number">4.1.</span> <span class="nav-text">3.1.分配器gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%8A%9F%E8%83%BDgadget"><span class="nav-number">4.2.</span> <span class="nav-text">3.2.功能gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-gadget%E6%8E%A2%E7%B4%A2%E5%8F%91%E7%8E%B0"><span class="nav-number">4.3.</span> <span class="nav-text">3.3.gadget探索发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%8F%91%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="nav-number">4.4.</span> <span class="nav-text">3.4.发动攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">4.实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%8F%AF%E7%94%A8%E7%9A%84gadgets"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.可用的gadgets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Dispatcher-Gadget"><span class="nav-number">5.2.</span> <span class="nav-text">4.2.Dispatcher Gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%85%B6%E5%AE%83gadget"><span class="nav-number">5.3.</span> <span class="nav-text">4.3.其它gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%A4%BA%E4%BE%8B%E6%94%BB%E5%87%BB"><span class="nav-number">5.4.</span> <span class="nav-text">4.4.示例攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%AE%A8%E8%AE%BA"><span class="nav-number">6.</span> <span class="nav-text">5.讨论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">7.</span> <span class="nav-text">6.相关工作</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">3.设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%88%86%E9%85%8D%E5%99%A8gadget"><span class="nav-number">4.1.</span> <span class="nav-text">3.1.分配器gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%8A%9F%E8%83%BDgadget"><span class="nav-number">4.2.</span> <span class="nav-text">3.2.功能gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-gadget%E6%8E%A2%E7%B4%A2%E5%8F%91%E7%8E%B0"><span class="nav-number">4.3.</span> <span class="nav-text">3.3.gadget探索发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%8F%91%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="nav-number">4.4.</span> <span class="nav-text">3.4.发动攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">4.实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%8F%AF%E7%94%A8%E7%9A%84gadgets"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.可用的gadgets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-Dispatcher-Gadget"><span class="nav-number">5.2.</span> <span class="nav-text">4.2.Dispatcher Gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%85%B6%E5%AE%83gadget"><span class="nav-number">5.3.</span> <span class="nav-text">4.3.其它gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E7%A4%BA%E4%BE%8B%E6%94%BB%E5%87%BB"><span class="nav-number">5.4.</span> <span class="nav-text">4.4.示例攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%AE%A8%E8%AE%BA"><span class="nav-number">6.</span> <span class="nav-text">5.讨论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">7.</span> <span class="nav-text">6.相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BB%93%E8%AE%BA"><span class="nav-number">8.</span> <span class="nav-text">7.结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BF%BB%E8%AF%91%E8%87%AA"><span class="nav-number">9.</span> <span class="nav-text">翻译自</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -675,7 +696,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">26:22</span>
+    <span title="Reading time total">26:23</span>
 </div>
   <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
   </div>
