@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop1.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop2.jpg">
 <meta property="article:published_time" content="2021-01-05T11:33:40.000Z">
-<meta property="article:modified_time" content="2021-01-06T16:34:00.993Z">
+<meta property="article:modified_time" content="2021-01-07T12:30:49.178Z">
 <meta property="article:author" content="lUc1f3r11">
 <meta property="article:tag" content="pwn">
 <meta name="twitter:card" content="summary">
@@ -236,7 +236,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-07 00:34:00" itemprop="dateModified" datetime="2021-01-07T00:34:00+08:00">2021-01-07</time>
+                <time title="Modified: 2021-01-07 20:30:49" itemprop="dateModified" datetime="2021-01-07T20:30:49+08:00">2021-01-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,14 +265,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.3k</span>
+              <span>12k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
+              <span>11 mins.</span>
             </span>
 
         </div>
@@ -288,26 +288,26 @@
 <p>本文介绍了一种新的代码重用攻击，称为面向跳转编程。这种新的攻击消除对堆栈和ret指令的依赖(包括类似于ret的指令，如pop+jmp)面向返回的编程不牺牲表达能力。这次攻击仍然制造和具有连接功能的gadgets，每个都执行某些基本操作，除了下面这些gadgets在一个间接分支结束，而不是利用ret来统一它们的便利性、攻击在dispatcher gadgets上调度和执行功能gadgets。已经成功地确定了可用性GNU libc库中的这些面向跳转的gadgets。用一个示例shellcode攻击来演示介绍该技术的实用性和有效性。</p>
 <a id="more"></a>
 
-<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞<br>并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了<br>越来越复杂的攻击和相应的攻击防御。</p>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>网络服务器经常受到攻击者的威胁，使用恶意制作的数据包来利用软件漏洞并获得未经授权的控制。尽管针对软件漏洞的根本原因进行了大量研究，但此类攻击仍然是最大的问题之一，在安全领域。军备竞赛在两国之间展开了越来越复杂的攻击和相应的攻击防御。</p>
 <p>软件利用的最早形式之一是代码注入攻击，其中恶意消息包括机器码，并使用缓冲区溢出或其他技术将控制流重定向到攻击者提供的代码。然而，随着cpu和操作系统的出现，这种威胁在很多情况下都得到了缓解。特别地，强制属性“一个给定的内存页永远不会同时具有这两个属性”同时可写和可执行。基本前提其背后的原因是，如果不能向某个页面写入代码，以后又不能从该页面执行代码，那么代码注入就不可能实现。</p>
-<p>不幸的是，攻击者已经开发出了创新的方法。例如，一种可能的方法是发射一种代码重用攻击，其中现有代码被重新用于一个恶意的结束。最简单和最常见的形式，这就是返回libc技术。在这个场景中,攻击者使用缓冲区溢出来覆盖部分带有返回地址和列表参数的堆栈libc(核心C库，动态链接到类unix环境中的所有应用程序)中的函数。这允许攻击者执行任意序列调用libc函数，常见的例子是调用system(“/bin/sh”)启动shell。</p>
-<p>虽然return-into-libc功能强大，但它不允许在被利用的应用程序的上下文中进行任意计算。为此，攻击者可能转向返回导向编程(ROP)。与前面一样，ROP覆盖<br>带有返回地址和参数的堆栈。然而地址现在指向任意现有的代码库，唯一的要求是<br>这些代码片段或gadgets以ret指令结束,将控制转移到下一个gadgets.Return-oriented编程已经证明在上是Turing complete的各种平台和代码库，和<br>自动化技术使此类攻击的开发成为一个简单的过程。真实世界该技术的危险性在Checkoway等人的研究中得到证实。用它来破坏一个常用的电子投票机的完整性。</p>
+<p>不幸的是，攻击者已经开发出了创新的方法。例如，一种可能的方法是发送一种代码重用攻击，其中现有代码被重新用于一个恶意的结束。最简单和最常见的形式，这就是返回libc技术。在这个场景中,攻击者使用缓冲区溢出来覆盖部分带有返回地址和列表参数的堆栈libc(核心C库，动态链接到类unix环境中的所有应用程序)中的函数。这允许攻击者执行任意序列调用libc函数，常见的例子是调用system(“/bin/sh”)启动shell。</p>
+<p>虽然return-into-libc功能强大，但它不允许在被利用的应用程序的上下文中进行任意计算。为此，攻击者可能转向返回导向编程(ROP)。与前面一样，ROP覆盖带有返回地址和参数的堆栈。然而地址现在指向任意现有的代码库，唯一的要求是这些代码片段或gadgets以ret指令结束,将控制转移到下一个gadgets.Return-oriented编程已经证明在上是Turing complete的各种平台和代码库，和自动化技术使此类攻击的开发成为一个简单的过程。真实世界该技术的危险性在Checkoway等人的研究中得到证实。用它来破坏一个常用的电子投票机的完整性。</p>
 <p>自从面向返回的编程出现以来，人们提出了许多防御措施来检测或防止基于rop的攻击。例如，DynIMA检测每个以ret结尾的小指令序列的连续执行，并怀疑它们是ROP中的gadgets攻击。DROP观察到，ROP执行时连续弹出的返回地址总是指向同一个地址特定的内存空间，并认为这是rop固有的对其检测有用的特征。无返回方法更进一步，消除了程序中的所有ret指令，从而消除了以返回为导向的gadgets，排除了<br>ROP-based攻击。</p>
 <ul>
 <li><img src="https://raw.githubusercontent.com/wiki/FDlucifer/FDlucifer.github.io/jop.jpg"></li>
 </ul>
 <p>在本文中，提出了一种替代的攻击范式称为面向跳转的编程(JOP)。在一个JOP-based攻击时，攻击者放弃对堆栈的所有依赖控制流和ret用于gadgets的发现和链接，而不是仅仅使用一个间接跳转序列指令。因为几乎所有已知的防守技术对抗ROP取决于它对堆栈的依赖，或ret, 它们中有一种能够发现或防御这种情况的新方法。一个例外是强制执行的系统完全控制流完整性.不幸的是，这类系统并没有被广泛部署，可能是由于担心它们的复杂性和负面的性能影响。</p>
-<p>与ROP类似，JOP的构造模块仍然很短称为gadget的代码序列。然而，并没有结束<br>每个这样的gadgets都以一个间接的jmp结尾。其中一些jmp指令是由编译器。其他的不是有意的，而是由于x86指令的密度和未对齐的可行性执行。然而，与ROP不同的是，ret设备可以控制的内容自然返回控件栈，jmp gadgets正在执行到它的目标的单向控制流传输，这使得很难重新获得控制，将下一个面向跳转的执行链返回gadgets。</p>
+<p>与ROP类似，JOP的构造模块仍然很短称为gadget的代码序列。然而，并没有结束每个这样的gadgets都以一个间接的jmp结尾。其中一些jmp指令是由编译器。其他的不是有意的，而是由于x86指令的密度和未对齐的可行性执行。然而，与ROP不同的是，ret设备可以控制的内容自然返回控件栈，jmp gadgets正在执行到它的目标的单向控制流传输，这使得很难重新获得控制，将下一个面向跳转的执行链返回gadgets。</p>
 <p>我们注意到一种基于间接jmps的代码重用攻击早在2003年就被作为一种理论可能性提出了。然而，一直存在着一个尚未解决的问题:攻击者如何保持对程序的控制执行。没有像ret这样的共同控制机制把它们统一起来，却不清楚如何把这些gadgets与单向jmps连在一起</p>
 <p>我们对这个问题的解决方案是新提出的gadgets的类，dispatcher gadgets。这样的gadgets旨在控制各种面向跳转的控制流gadget。更具体地说，如果把其他gadgets看作执行基本操作功能gadgets,dispatcher gadgets是专门选择来确定的,接下来将调用functional gadget。自然地,dispatcher gadgets可以维护一个内部分派表，该表显式地指定函数控制流gadgets。此外，它确保结束的jmp指令将功能gadgets把控制权转移回调度器gadgets。通过这样做，面向跳转的计算变得可行。</p>
 <p>为了实现相同的Turing-complete表达ROP的力量，在识别各种jump-oriented gadgets用于内存加载/存储、算术计算、二进制操作、条件分支和系统调用的gadgets。为此，提出了一种算法来发现和收集jump-oriented gadgets，将它们组织到不同的类别中，并将它们保存在一个中心化gadget目录中。</p>
 <p>综上所述，本文的贡献如下:</p>
 <ol>
-<li><p>扩展代码重用攻击的分类,x86包含了一种新的攻击类型: jump-oriented<br>编程。与现有的return-oriented编程，攻击有不依赖栈上的控制流的好处。相反,介绍执行功能的设备要扮演这个角色的dispatcher gadgets的概念。</p>
+<li><p>扩展代码重用攻击的分类,x86包含了一种新的攻击类型: jump-oriented编程。与现有的return-oriented编程，攻击有不依赖栈上的控制流的好处。相反,介绍执行功能的设备要扮演这个角色的dispatcher gadgets的概念。</p>
 </li>
 <li><p>提出一种基于启发式的算法在x86上发现各种jump-oriented gadgets，包括critical dispatcher gadgets。研究结果表明所有这些gadgets都在动态链接到几乎所有UNIX应用程序的GNU libc中充分可用。</p>
 </li>
-<li><p>证明这种技术的有效性基于gadgets的jump-oriented的shellcode攻击<br>由我们的算法发现。</p>
+<li><p>证明这种技术的有效性基于gadgets的jump-oriented的shellcode攻击由我们的算法发现。</p>
 </li>
 </ol>
 <p>论文的其余部分组织如下: 第2部分提供x86相关方面的背景知识,架构和现有ROP方法。接下来，第3节解释了新的面向跳转的编程攻击的设计，然后第4节给出了一个实现一个x86 Linux系统，包括一个具体的攻击示例。第5节检查了方法的局限性，并探索了改进的方法。最后，第6节介绍,第七部分是本文的总结部分。</p>
@@ -328,7 +328,55 @@
 <p>给出一个JOP程序的控制流程示例。在这个例子中，实际上增加了两个内存值(分别由eax和ebx指向), store将总和存入另一个由ecx指向的内存位置，即[ecx] ← [eax] + [ebx]。</p>
 <p>这项工作的主要目标是证明jump-oriented编程的可行性。证明它的表达能力可以与return-oriented编程相媲美。但是，通过不依赖堆栈进行控制流，JOP可以潜在地使用任何内存范围，甚至包括不连续内存，以保存调度表。</p>
 <p>下面，进一步阐述dispatcher gadgets(第3.1节)和功能gadgets(第3.2节)，它们的基本运算包括实际计算。在此之后，讨论常用的代码库(第3.3节)。最后，探索引导一个jump-oriented程序的可能方法(3.4节)。</p>
-<h3 id="3-1分配器gadget"><a href="#3-1分配器gadget" class="headerlink" title="3.1分配器gadget"></a>3.1分配器gadget</h3>
+<h3 id="3-1分配器gadget"><a href="#3-1分配器gadget" class="headerlink" title="3.1分配器gadget"></a>3.1分配器gadget</h3><p>dispatcher gadget在JOP技术中起着关键作用。它本质上维护一个虚拟程序计数器pc，并通过推进它来执行JOP程序一个接一个的gadget。具体来说，每个pc值指定调度表中的一个条目，它指向一个特定的jump-oriented功能性产品。一旦被调用，每个功能gadget将执行基本操作，如算术计算、分支或特定系统调用的调用。</p>
+<p>我们考虑任何可以实现jump-oriented的gadget以下算法作为调度程序候选。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pc ← f(pc);</span><br><span class="line">goto ∗ pc;</span><br></pre></td></tr></table></figure>
+
+<p>在这里，pc可以是一个内存地址或寄存器，表示指向我们的跳转程序的指针。它不是CPU的指令指针——它指的是由攻击者提供的gadget表。函数f(pc)有改变程序计数器pc可预测任何操作和演进的方式。在某些情况下，它可以通过纯粹的算术简单地表示 (f(pc) = pc + 4 as shown in Figure 3). 在其他情况下，它可能是内存解引用操作(例如，f(pc) = ∗(pc−18))或任何其他可以被攻击者预先预测的表达式。每次调用dispatcher gadget时，都会调用相应的pc。然后调度程序取消对它的引用并跳转到产生的地址。</p>
+<p>考虑到dispatcher的广泛定义，没费什么事就找到了几个可行的候选libc。调度gadget推进pc的方式影响调度表的组织。具体地说,如果pc是重复的，调度表可以是一个简单的数组由一个常量(例如，f(pc) = pc+4)或一个链接,如果内存被解引用，则列出(例如，f(pc) = ∗(pc−18))。第4节中的示例攻击使用数组来组织分派表。</p>
+<p>这种新的编程模式扩展了ROP中使用的基本代码攻击。具体来说，如果考虑基于rop的程序中使用的堆栈作为其调度表和esp作为它的pc机，在每个返回的gadget的末端的ret指令作为一个调度器来推进pc机,每完成一个gadget就乘以4，即f(pc) = pc + 4。然而，所有基于rop的攻击仍然依赖于堆栈, 但在基于jop的攻击中不再需要。</p>
+<h3 id="3-2功能gadget"><a href="#3-2功能gadget" class="headerlink" title="3.2功能gadget"></a>3.2功能gadget</h3><p>dispatcher gadget本身并不执行任何实际的操作, 它独立工作——它的存在完全是为了发送其他gadget，称之为功能性gadget。保持控制执行，调度程序执行的所有功能gadget, 得出结论一定要跳回去，这样下一个gadget才可以启动。</p>
+<p>更正式地说，功能性gadget被定义为许多有用的指令，它们以将要加载的带有已知表达式结果的指令指针序列结束,。这个表达式可以是一个寄存器 (jmp edx)，一个寄存器解引用 (jmp [edx])，或者一个复杂的解引用表达式 (jmp [edx + esi*4-1])。唯一的要求是在执行分支时，它必须计算到调度程序的地址，或者计算到导致调度的程序。然而，攻击并不依赖于这些分支的特定操作数: 功能gadget可能会改变CPU状态，以便为下一次操作提供一组不同的gadget。例如,一个gadget可能会以jmp [edx] 结束，然后另一个gadget可能会使用esi之前用于计算edx寄存器调度程序地址加载，并以jmp esi终止。此外，这个功能性gadget可能会对pc产生影响，这使得实现条件分支在面向跳转的程序中成为可能，包括引入循环。对于分支使用最明显的操作码是间接跳转(jmp)，但值得注意的是因为没有依赖栈，也可以使用以调用结束的序列，因为将返回地址推入堆栈是无关的。</p>
+<p>这里为了获得与ROP同样的表现能力需要一些不同种类的功能gadgets，简要地介绍一下。例子将在第4节中介绍。</p>
+<p>用return-oriented的方法加载数据, 放置数据的明显位置: 堆栈本身。允许无处不在的pop指令加载寄存器。然而，加载数据值的方式多种多样任何从指针加载和推进指针的gadgets都可以。</p>
+<p>在x86上，有各种各样的字符串和循环加载的序列。而且，即使jop没有依赖栈来控制流，没有栈的理由不能作为数据加载机制, 在ROP中，现有的防御技术关注于保护基于堆栈的控制流，而不是简单的数据访问。实现时，栈指针esp被重定向堆栈用于此目的。</p>
+<ul>
+<li>访问内存</li>
+</ul>
+<p>要访问内存，需要加载和存储gadgets。这些gadgets需要一个内存地址读取或写入该位置的字节或字。</p>
+<ul>
+<li>算术和逻辑</li>
+</ul>
+<p>一旦操作数(或指针操作数)被装入CPU寄存器，ALU操作可以通过寻找具有适当操作码(add、sub和or等)的gadget来应用。</p>
+<ul>
+<li>分支</li>
+</ul>
+<p>通过修改pc机的寄存器或内存位置可以实现无条件分支。条件分支通过调整基于先前pc计算的结果来实现的。有几种方法是可以实现的，包括将计算值添加到pc机，使用在gadget内基于逻辑的一个短的条件分支来改变pc，甚至使用x86的特殊条件移动指令更新pc(cmov)。</p>
+<ul>
+<li>system calls</li>
+</ul>
+<p>上述设备足以使JOP Turing complete(即，能任意计算)，系统调用需要执行大多数实际任务。建立一个系统有几种不同的方法调用。首先，通过设置具有适当参数和返回值的堆栈，可以调用合法函数恢复适当CPU的gadget地址状态并执行调度程序。然而，因为它可能让现有的ROP防御系统检测到这一点，更谨慎的方法是直接进行系统调用。执行此操作的方法因CPU和操作系统的不同而不同。在基于x86的Linux上，可以执行, 如果要触发中断，需要跳转到内核提供的中断例程调用__kernel_vsyscall来执行一个sysenter指令，甚至直接执行sysenter指令。</p>
+<h3 id="3-3gadget探索发现"><a href="#3-3gadget探索发现" class="headerlink" title="3.3gadget探索发现"></a>3.3gadget探索发现</h3><p>na¨ıve方法就是拆解目标二进制和寻找间接跳转或者调用指令来定位产品。但是，在x86平台上，指令长度可变，因此从相同的内存解码一个偏移量与另一个偏移量的操作可以产生不同的集合。这意味着每个x86二进制文件都包含一个可以访问的意外代码序列跳转到不在原始指令边界上的偏移量。考虑到这一点，一个定位gadget的算法ret是Shacham在ROP背景下给出的。</p>
+<p>在gadget发现过程中采用了类似的方法。该算法通过扫描二进制文件的可执行区域来寻找间接分支指令的有效起始字节。在x86上，它由字节0xff和第二个字节组成，第二个字节具有特定的值范围，这样的序列可以通过线性搜索定位。从这里开始，一个字节一个字节地后退一步并解码每个可能终止于间接跳转的gadget是一件很简单的事情。这种方法在以下算法中正式定义。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># procedure IsViableGadget(G)</span></span><br><span class="line">1: V ← &#123;Registers and writable memory addresses&#125;</span><br><span class="line">2: J ← (Last instruction of G)</span><br><span class="line">3: <span class="keyword">if</span> (J is not an indirect jump) ∨ (J.operand /∈ V ) <span class="keyword">then</span></span><br><span class="line">4:     <span class="built_in">return</span> <span class="literal">false</span></span><br><span class="line">5: end <span class="keyword">if</span></span><br><span class="line">6: A ← &#123;Addresses of each instruction <span class="keyword">in</span> G&#125;</span><br><span class="line">7: <span class="keyword">for</span> all instructions I ∈ G, such that I != J <span class="keyword">do</span></span><br><span class="line">8:     <span class="keyword">if</span> (I is illegal) ∨ ((I is a branch) ∧ ¬ ((I is a conditional jump) ∧ (I.operand ∈ A))) <span class="keyword">then</span></span><br><span class="line">9:         <span class="built_in">return</span> <span class="literal">false</span></span><br><span class="line">10:     end <span class="keyword">if</span></span><br><span class="line">11: end <span class="keyword">for</span></span><br><span class="line">12: <span class="built_in">return</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># procedure FindGadgets(C)</span></span><br><span class="line">1: <span class="keyword">for</span> each address p that is an indirect branch <span class="keyword">in</span> C <span class="keyword">do</span></span><br><span class="line">2:     len ← (Length of the branch at C[p])</span><br><span class="line">3:     <span class="keyword">for</span> δ = 1 to δmax <span class="keyword">do</span></span><br><span class="line">4:         G ← disassemble(C[p − δ : p + len])</span><br><span class="line">5:         <span class="keyword">if</span> IsV iableGadget(G) ∧ Heuristic(G) <span class="keyword">then</span></span><br><span class="line">6:             <span class="built_in">print</span> G</span><br><span class="line">7:         end <span class="keyword">if</span></span><br><span class="line">8:     end <span class="keyword">for</span></span><br><span class="line">9: end <span class="keyword">for</span></span><br></pre></td></tr></table></figure>
+
+<p>如算法中所示，FindGadget(C)过程使用字符串搜索来查找代码基C中的间接跳转，然后向后遍历最多δmax字节并反汇编每个结果代码区域。δmax的值是一个器件的最大尺寸，以字节为单位。它的选择取决于给定体系结构上指令的平均长度以及每个gadget要考虑的最大指令数。经验是，正如在ROP中观察到的，有用的gadget不需要超过5条指令。</p>
+<p>有几个标准可以在这个阶段消除潜在的gadgets; 这些由IsViableGadget(G)过程检测。首先，由于算法每次后退一个字节，因此最初是间接跳转的序列可能不再被解释为间接跳转。如果是这样，这个gadget就不存在了。其次，间接跳转的目标可以是一个寄存器值(例如，esi)、寄存器([esi])所指向的地址，或者内存解引用([0x7474505b])所指向的地址。在后一种情况下，如果给定的地址在运行时不太可能是有效的、可写的位置，那么这个gadget就被消除了。第三，如果这个gadget的任何部分没有编码合法的x86指令，这个gadget就会被删除。最后，gadget本身可能包含一个与最后间接分支分离的条件分支。如果这个分支的目标在gadget边界之外，gadget就被消除了。而且，如果分支的目标与gadget中确定的指令不一致，就会删除分支。</p>
+<p>这将在代码库中生成一组可能有用的gadgets，而在libc这样的大型代码库中，这将意味着成千上万个候选gadgets。这个集合通过启发式(G)进一步缩小，启发式(G)根据gadgets在特定用途上的可行性来过滤它们。在ROP中已经有很多关于完全自动化gadget搜索的工作，而JOP gadget搜索增加了额外的复杂性。因为每个gadgets都必须以返回调度器结束，所以必须小心确保用于此目的的寄存器在需要之前被正确设置。这在定位和链接面向跳转的gadgets时引入了两个要求。这个gadgets不能摧毁它自己的跳跃目标。但是，如果这种修改可以由以前的gadgets补偿，则可以修改目标。例如，如果一个gadget在结束jmp [edx]之前将edx作为附属加1，那么gadget开始时edx的值应该比预期值小1。因为gadgets是连在一起的，所以早期装置的附属不能干扰后续装置的跳跃目标。例如，如果在gadgets A中使用一个寄存器进行计算，并在gadgets B中用作跳转目标，那么在使用gadgets B之前，中间的gadgets必须将这个寄存器设置为调度程序地址。</p>
+<p>由于增加了复杂性，在这项工作中搜索gadget需要额外的启发式，在算法中表示为启发式(G)。将在下面描述这些启发式中最有趣的部分。</p>
+<p>为了在代码库中定位潜在的dispatcher gadget，我们开发了dispatcher启发式。该算法的工作原理是将搜索算法定位所有潜在gadget过滤到一个小集合，攻击设计者可以从中选择。对于每个gadget，首先在gadget的最后一条指令中获得跳转目标，然后根据三个条件检查gadget序列中的第一条指令。</p>
+<p>首先，指令必须以跳转目标作为其目标操作数。如果gadget没有修改跳转目标，那么它就不能是dispatcher。</p>
+<p>其次，根据操作码过滤gadgets。由于各种各样的x86操作码可能会促进pc的发展，通过黑名单过滤操作码比通过白名单更方便。因此，抛出不能对目标进行至少单词大小排列的操作码。</p>
+<p>第三，完全覆盖目标操作数的操作(例如mov)必须是自引用的，也就是说，目标操作数也存在于源操作数中。例如，“加载有效地址”操作码(lea)可以基于一个或多个寄存器执行计算。指令lea edx，[eax+ebx] 在调度程序中不太可能有用，因为它会用eax+ebx 的计算覆盖edx—它不会使edx提前一个可预测的值。相反，指令lea edx，[edx+esi] 通过存储在esi中的值推进edx，因此是一个调度程序候选。自我引用的要求并不是严格必需的，因为可以有一个多寄存器方案充当调度程序，但是强制执行这个要求通过消除大量的误报大大简化了搜索。</p>
+<p>一旦这些gadget经过这三个条件的过滤，我们就会检查每个候选者，并选择使用最不常用寄存器的一个。这是因为dispatcher使用的一个或多个寄存器将无法进行计算，这意味着依赖于这些寄存器的功能gadget将不可用。因此，为了使最大数量的功能gadget可用，选择使用最不常见寄存器的调度器。</p>
+<p>有许多启发式方法可用于定位不同类型的功能gadgets。在条件转移gadgets的情况下，条件转移操作可以分为两个步骤: (1)根据比较更新通用寄存器，(2)利用这个结果对pc进行排列。因为第2步是一个简单的算术操作，所以将重点放在寻找实现第1步的gadgets上。</p>
+<p>比较的结果存储在CPU的比较器flag寄存器中(x86上的EFLAGS)，最常用的利用这些flag的方法是使用条件跳转指令。例如，在x86上，je指令将“如果相等就跳转”，即如果设置了“零flag”ZF。要找到利用这些指令的gadgets，启发式只需定位那些第一个指令是有条件跳转到同一gadgets后面的另一个指令的gadgets。这样的gadgets将有条件地跳过gadgets主体的某些部分，并可能被用于捕获通用寄存器中的比较结果，随后可以将其添加到pc中。</p>
+<p>除了使用条件跳转之外，一些cpu，比如x86的现代迭代，还支持“条件移动”(cmov)和“在条件下设置字节”(set)指令。可以寻找一个使用这些指令有条件地改变寄存器的gadgets。</p>
+<p>最后，还有隐式访问比较器flag的指令，例如adc(“带进位的加法”)。这指令就像一个正常的添加, 除了目标操作数将增加一个进一步如果设置了“进位标记”。因为携带flag代表了一个无符号整数的结果比较cmp指令,指令像adc条件转移指令,因此可以用于更新通用寄存器的比较结果。</p>
+<p>相比之下，查找算术、逻辑和内存访问gadget的启发式方法要简单得多。只需要将操作码限制为所需的操作(add、mov等)，并确保任何目标操作数不会与跳转目标冲突。</p>
+<h3 id="3-4发动攻击"><a href="#3-4发动攻击" class="headerlink" title="3.4发动攻击"></a>3.4发动攻击</h3><p>可能导致jump-oriented攻击的漏洞与return-oriented的编程类似。然而，关键的区别在于，ROP需要控制指令指针eip和堆栈指针esp，而JOP需要eip以及用于运行dispatcher gadget的内存位置或寄存器集。在实践中，这可以通过一个特殊的初始化器gadget来引导控制流来实现。具体来说，initializer gadget通过算术和逻辑或从内存加载值来填充相关的寄存器。一旦完成了这一步，初始化器就跳转到调度程序，面向跳转的程序就可以开始了。initializer gadget可以采取多种形式，这取决于需要填充的寄存器的组合。一个简单的例子是执行popa指令的gadget，它从堆栈中加载每个通用寄存器。初始化器在所有情况下都不是严格必需的: 如果攻击者可以在寄存器恰好设置为有用值时接管控制流，那么分派器可以直接从那里运行。</p>
+<p>The precise vulnerabilities that can lead to a return-oriented attack have been discussed in depth previously. Due to space constraints, we omit the details here and merely summarize that the attacker can conceivably launch a jump-oriented attack by overwriting the stack, a function pointer, or a setjmp buffer. As the first two are already well-known, we explain the setjmp buffer below.</p>
+
     </div>
 
     
@@ -484,7 +532,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">3.设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E5%88%86%E9%85%8D%E5%99%A8gadget"><span class="nav-number">4.1.</span> <span class="nav-text">3.1分配器gadget</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">2.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">3.设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1%E5%88%86%E9%85%8D%E5%99%A8gadget"><span class="nav-number">4.1.</span> <span class="nav-text">3.1分配器gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2%E5%8A%9F%E8%83%BDgadget"><span class="nav-number">4.2.</span> <span class="nav-text">3.2功能gadget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3gadget%E6%8E%A2%E7%B4%A2%E5%8F%91%E7%8E%B0"><span class="nav-number">4.3.</span> <span class="nav-text">3.3gadget探索发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4%E5%8F%91%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="nav-number">4.4.</span> <span class="nav-text">3.4发动攻击</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -581,7 +629,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">26:10</span>
+    <span title="Reading time total">26:16</span>
 </div>
   <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9tdXNlLnRoZW1lLW5leHQub3Jn">NexT.Muse</span>
   </div>
